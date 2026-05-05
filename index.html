@@ -1,0 +1,2174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="FORJA">
+<meta name="theme-color" content="#0a0a0a">
+<title>FORJA · Entrenamiento</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Archivo:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0a0a;
+    --bg-elev:#141414;
+    --bg-card:#1a1a1a;
+    --bg-card-2:#202020;
+    --border:#2a2a2a;
+    --border-bright:#3a3a3a;
+    --text:#f5f5f5;
+    --text-dim:#a0a0a0;
+    --text-muted:#6a6a6a;
+    --accent:#ff3d00;
+    --accent-2:#ff7a18;
+    --accent-soft:rgba(255,61,0,0.15);
+    --success:#00d97e;
+    --success-soft:rgba(0,217,126,0.12);
+    --warn:#ffb020;
+    --warn-soft:rgba(255,176,32,0.12);
+    --info:#3b82f6;
+    --info-soft:rgba(59,130,246,0.12);
+    --safe-top:env(safe-area-inset-top, 0px);
+    --safe-bot:env(safe-area-inset-bottom, 0px);
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0; padding:0; background:var(--bg); color:var(--text); font-family:'Archivo',sans-serif; overflow-x:hidden;}
+  body{
+    min-height:100vh;
+    padding-top:var(--safe-top);
+    padding-bottom:calc(var(--safe-bot));
+    background-image:
+      radial-gradient(circle at 20% 0%, rgba(255,61,0,0.08), transparent 40%),
+      radial-gradient(circle at 80% 100%, rgba(255,122,24,0.05), transparent 40%);
+    background-attachment:fixed;
+  }
+  button{font-family:inherit; cursor:pointer; border:none; background:none; color:inherit;}
+  input, select, textarea{font-family:inherit;}
+  h1,h2,h3,h4{margin:0; font-family:'Bebas Neue', sans-serif; letter-spacing:0.02em;}
+  h1{font-size:2.3rem; line-height:0.95;}
+  h2{font-size:1.7rem; line-height:1;}
+  h3{font-size:1.25rem; line-height:1.1;}
+
+  /* HEADER */
+  .topbar{
+    position:sticky; top:0; z-index:100;
+    background:rgba(10,10,10,0.85);
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+    border-bottom:1px solid var(--border);
+    padding:12px 18px;
+    padding-top:calc(12px + var(--safe-top));
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .brand{display:flex; align-items:center; gap:10px;}
+  .brand-mark{
+    width:36px; height:36px; border-radius:8px;
+    background:linear-gradient(135deg, var(--accent), var(--accent-2));
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 4px 12px rgba(255,61,0,0.4);
+  }
+  .brand-name{font-family:'Bebas Neue'; font-size:1.5rem; letter-spacing:0.08em;}
+  .brand-sub{font-size:0.65rem; color:var(--text-muted); letter-spacing:0.2em; text-transform:uppercase; font-weight:700;}
+  .stats-pill{
+    background:var(--bg-card); border:1px solid var(--border);
+    padding:6px 12px; border-radius:20px;
+    font-family:'JetBrains Mono', monospace; font-size:0.7rem;
+    color:var(--text-dim);
+  }
+  .stats-pill strong{color:var(--accent); font-weight:700;}
+
+  /* CONTAINER */
+  .container{padding:18px; max-width:600px; margin:0 auto; padding-bottom:90px;}
+
+  /* HERO */
+  .hero{
+    position:relative; padding:22px 20px;
+    background:linear-gradient(135deg, #1a0a05 0%, #0a0a0a 100%);
+    border:1px solid var(--border);
+    border-radius:18px;
+    margin-bottom:18px; overflow:hidden;
+  }
+  .hero::before{
+    content:""; position:absolute; top:-30px; right:-30px;
+    width:140px; height:140px;
+    background:radial-gradient(circle, var(--accent) 0%, transparent 70%);
+    opacity:0.25; filter:blur(20px);
+  }
+  .hero-label{font-size:0.65rem; color:var(--accent); letter-spacing:0.25em; text-transform:uppercase; font-weight:800; margin-bottom:6px;}
+  .hero h1{margin-bottom:8px;}
+  .hero p{color:var(--text-dim); font-size:0.88rem; line-height:1.5; margin:0;}
+  .hero-stats{
+    display:grid; grid-template-columns:repeat(3,1fr);
+    gap:10px; margin-top:18px;
+    position:relative; z-index:1;
+  }
+  .hero-stat{
+    background:rgba(255,255,255,0.03);
+    border:1px solid var(--border);
+    padding:10px; border-radius:10px;
+    text-align:center;
+  }
+  .hero-stat-num{font-family:'Bebas Neue'; font-size:1.6rem; color:var(--accent); line-height:1;}
+  .hero-stat-lbl{font-size:0.6rem; color:var(--text-muted); letter-spacing:0.15em; text-transform:uppercase; margin-top:4px;}
+
+  /* RECOMENDACIÓN DEL DÍA */
+  .recommendation{
+    background:linear-gradient(135deg, var(--bg-card), var(--bg-elev));
+    border:1px solid var(--border-bright);
+    border-radius:16px;
+    padding:18px;
+    margin-bottom:18px;
+    position:relative;
+    overflow:hidden;
+  }
+  .recommendation::before{
+    content:""; position:absolute; left:0; top:0; bottom:0;
+    width:4px; background:linear-gradient(180deg, var(--accent), var(--accent-2));
+  }
+  .rec-header{display:flex; align-items:center; gap:8px; margin-bottom:10px;}
+  .rec-badge{
+    background:var(--accent-soft); color:var(--accent);
+    padding:3px 10px; border-radius:20px;
+    font-size:0.6rem; font-weight:800; letter-spacing:0.15em;
+    text-transform:uppercase;
+  }
+  .rec-day{font-size:0.7rem; color:var(--text-muted); letter-spacing:0.1em; font-weight:700; text-transform:uppercase;}
+  .rec-reason{
+    font-size:0.78rem; color:var(--text-dim); line-height:1.5;
+    margin-bottom:14px;
+    padding:10px; background:rgba(255,255,255,0.02);
+    border-radius:8px; border-left:2px solid var(--accent);
+  }
+  .rec-options{display:flex; flex-direction:column; gap:8px;}
+  .rec-option{
+    background:var(--bg-elev); border:1px solid var(--border);
+    border-radius:10px; padding:12px;
+    display:flex; align-items:center; gap:12px;
+    cursor:pointer; transition:all 0.2s;
+    text-align:left;
+  }
+  .rec-option:active{transform:scale(0.98); border-color:var(--accent);}
+  .rec-option.primary{background:var(--accent-soft); border-color:var(--accent);}
+  .rec-option-icon{width:36px; height:36px; flex-shrink:0; color:var(--accent); display:flex; align-items:center; justify-content:center;}
+  .rec-option-info{flex:1; min-width:0;}
+  .rec-option-title{font-weight:700; font-size:0.88rem;}
+  .rec-option-meta{font-size:0.7rem; color:var(--text-dim); margin-top:2px; font-family:'JetBrains Mono', monospace;}
+  .rec-option-arrow{color:var(--text-muted);}
+
+  /* TABS */
+  .tabs{
+    display:flex; gap:4px; padding:4px;
+    background:var(--bg-card); border:1px solid var(--border);
+    border-radius:12px; margin-bottom:16px;
+    overflow-x:auto; -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  .tabs::-webkit-scrollbar{display:none;}
+  .tab{
+    flex:1; padding:9px 12px;
+    font-size:0.72rem; font-weight:700;
+    color:var(--text-muted); white-space:nowrap;
+    border-radius:8px; transition:all 0.2s;
+    letter-spacing:0.05em; text-transform:uppercase;
+  }
+  .tab.active{background:var(--accent); color:#fff; box-shadow:0 4px 12px rgba(255,61,0,0.3);}
+
+  /* CATEGORÍAS */
+  .cat-grid{
+    display:grid; grid-template-columns:repeat(2,1fr);
+    gap:10px; margin-bottom:16px;
+  }
+  .cat-card{
+    position:relative; padding:14px;
+    background:var(--bg-card);
+    border:1px solid var(--border);
+    border-radius:14px; text-align:left;
+    transition:all 0.2s; overflow:hidden;
+  }
+  .cat-card:active{transform:scale(0.97);}
+  .cat-card.active{
+    background:linear-gradient(135deg, var(--accent-soft), transparent);
+    border-color:var(--accent);
+  }
+  .cat-icon{width:32px; height:32px; margin-bottom:10px; color:var(--accent);}
+  .cat-name{font-family:'Bebas Neue'; font-size:1.1rem; letter-spacing:0.05em;}
+  .cat-count{font-size:0.7rem; color:var(--text-muted); margin-top:2px;}
+
+  /* RUTINAS */
+  .section-title{
+    display:flex; align-items:center; justify-content:space-between;
+    margin:20px 0 12px;
+  }
+  .section-title h2{color:var(--text);}
+  .section-title-line{flex:1; height:1px; background:var(--border); margin:0 14px;}
+
+  .routine-card{
+    background:var(--bg-card);
+    border:1px solid var(--border);
+    border-radius:14px; padding:16px;
+    margin-bottom:12px; cursor:pointer;
+    transition:all 0.2s;
+    position:relative; overflow:hidden;
+  }
+  .routine-card:active{transform:scale(0.99); border-color:var(--accent);}
+  .routine-head{display:flex; gap:14px; align-items:flex-start;}
+  .routine-icon{
+    width:50px; height:50px; flex-shrink:0;
+    background:linear-gradient(135deg, var(--bg-card-2), var(--bg-elev));
+    border:1px solid var(--border-bright);
+    border-radius:12px;
+    display:flex; align-items:center; justify-content:center;
+    color:var(--accent);
+  }
+  .routine-meta{flex:1; min-width:0;}
+  .routine-title{font-family:'Bebas Neue'; font-size:1.2rem; letter-spacing:0.03em; line-height:1.1;}
+  .routine-desc{font-size:0.78rem; color:var(--text-dim); margin-top:4px; line-height:1.4;}
+  .routine-tags{display:flex; gap:6px; margin-top:10px; flex-wrap:wrap;}
+  .tag{
+    padding:3px 8px; font-size:0.65rem; font-weight:700;
+    background:var(--bg-card-2); border:1px solid var(--border);
+    border-radius:6px; color:var(--text-dim);
+    letter-spacing:0.05em; text-transform:uppercase;
+    font-family:'JetBrains Mono', monospace;
+  }
+  .tag.level-1{color:#00d97e; border-color:rgba(0,217,126,0.3);}
+  .tag.level-2{color:var(--warn); border-color:rgba(255,176,32,0.3);}
+  .tag.level-3{color:var(--accent); border-color:rgba(255,61,0,0.3);}
+
+  /* MODAL DETALLE */
+  .modal-overlay{
+    position:fixed; inset:0;
+    background:rgba(0,0,0,0.85);
+    backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+    z-index:200; display:none;
+    animation:fadeIn 0.2s ease;
+  }
+  .modal-overlay.show{display:block;}
+  @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+  .modal{
+    position:fixed; inset:0;
+    background:var(--bg);
+    z-index:201; display:none; flex-direction:column;
+    overflow-y:auto; -webkit-overflow-scrolling:touch;
+    padding-top:var(--safe-top);
+    padding-bottom:var(--safe-bot);
+  }
+  .modal.show{display:flex; animation:slideUp 0.3s ease;}
+  @keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
+  .modal-head{
+    position:sticky; top:0; z-index:10;
+    background:rgba(10,10,10,0.9);
+    backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+    padding:14px 18px; padding-top:calc(14px + var(--safe-top));
+    border-bottom:1px solid var(--border);
+    display:flex; align-items:center; gap:12px;
+  }
+  .back-btn{
+    width:38px; height:38px; border-radius:10px;
+    background:var(--bg-card); border:1px solid var(--border);
+    display:flex; align-items:center; justify-content:center;
+    color:var(--text);
+  }
+  .modal-title{flex:1; font-family:'Bebas Neue'; font-size:1.15rem;}
+  .modal-body{flex:1; padding:0 18px 100px;}
+
+  .routine-banner{
+    margin:16px 0; padding:24px 20px;
+    background:linear-gradient(135deg, #1a0a05, #0a0a0a);
+    border:1px solid var(--border); border-radius:16px;
+    position:relative; overflow:hidden;
+  }
+  .routine-banner::before{
+    content:""; position:absolute; right:-40px; top:-40px;
+    width:160px; height:160px; border-radius:50%;
+    background:radial-gradient(circle, var(--accent), transparent 70%);
+    opacity:0.2;
+  }
+  .routine-banner-icon{width:60px; height:60px; color:var(--accent); margin-bottom:14px;}
+  .routine-banner h2{font-size:1.9rem; margin-bottom:6px;}
+  .routine-banner-desc{color:var(--text-dim); font-size:0.88rem; line-height:1.5;}
+  .routine-info-grid{
+    display:grid; grid-template-columns:repeat(3,1fr);
+    gap:8px; margin-top:16px;
+  }
+  .info-cell{
+    background:rgba(255,255,255,0.03); border:1px solid var(--border);
+    border-radius:10px; padding:10px; text-align:center;
+  }
+  .info-cell-num{font-family:'Bebas Neue'; font-size:1.3rem; color:var(--accent);}
+  .info-cell-lbl{font-size:0.6rem; color:var(--text-muted); letter-spacing:0.12em; text-transform:uppercase; margin-top:2px;}
+
+  /* EJERCICIOS */
+  .exercise-list{margin-top:16px;}
+  .exercise-card{
+    background:var(--bg-card);
+    border:1px solid var(--border);
+    border-radius:12px; padding:14px;
+    margin-bottom:10px;
+    display:flex; gap:12px;
+  }
+  .exercise-num{
+    width:32px; height:32px; flex-shrink:0;
+    background:var(--accent); color:#fff;
+    border-radius:8px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Bebas Neue'; font-size:1.1rem;
+  }
+  .exercise-content{flex:1; min-width:0;}
+  .exercise-name{font-weight:700; font-size:0.92rem; margin-bottom:2px;}
+  .exercise-target{font-size:0.7rem; color:var(--accent); letter-spacing:0.1em; text-transform:uppercase; font-weight:700; margin-bottom:6px;}
+  .exercise-detail{
+    display:flex; gap:14px; flex-wrap:wrap;
+    font-family:'JetBrains Mono', monospace; font-size:0.76rem;
+  }
+  .exercise-detail span{color:var(--text-dim);}
+  .exercise-detail strong{color:var(--text);}
+  .exercise-note{
+    font-size:0.78rem; color:var(--text-dim); margin-top:8px;
+    padding:8px 10px; background:rgba(255,255,255,0.02);
+    border-left:2px solid var(--accent); border-radius:4px;
+    line-height:1.4;
+  }
+
+  /* BOTONES ACCIONES RUTINA */
+  .complete-bar{
+    position:fixed; bottom:0; left:0; right:0; z-index:50;
+    background:linear-gradient(180deg, transparent, var(--bg) 30%);
+    padding:16px 18px; padding-bottom:calc(16px + var(--safe-bot));
+    display:none;
+  }
+  .complete-bar.show{display:flex; gap:8px;}
+  .complete-btn{
+    flex:1; padding:14px;
+    background:linear-gradient(135deg, var(--accent), var(--accent-2));
+    color:#fff; border-radius:14px;
+    font-family:'Bebas Neue'; font-size:1.1rem; letter-spacing:0.1em;
+    box-shadow:0 8px 24px rgba(255,61,0,0.35);
+    transition:transform 0.15s;
+  }
+  .complete-btn:active{transform:scale(0.98);}
+  .schedule-btn{
+    width:60px; padding:14px; border-radius:14px;
+    background:var(--bg-card); border:1px solid var(--border-bright);
+    color:var(--text); display:flex; align-items:center; justify-content:center;
+  }
+
+  /* ============= PLANIFICADOR ============= */
+  .week-nav{
+    display:flex; align-items:center; justify-content:space-between;
+    background:var(--bg-card); border:1px solid var(--border);
+    border-radius:12px; padding:8px; margin-bottom:14px;
+  }
+  .week-nav-btn{
+    width:36px; height:36px; border-radius:8px;
+    background:var(--bg-elev); display:flex; align-items:center; justify-content:center;
+    color:var(--text);
+  }
+  .week-nav-btn:active{background:var(--accent-soft);}
+  .week-nav-label{font-family:'Bebas Neue'; font-size:1.1rem; letter-spacing:0.05em;}
+  .week-nav-sub{font-size:0.65rem; color:var(--text-muted); letter-spacing:0.1em; text-transform:uppercase; text-align:center; font-weight:700;}
+
+  .day-card{
+    background:var(--bg-card); border:1px solid var(--border);
+    border-radius:14px; padding:14px; margin-bottom:10px;
+    transition:all 0.2s;
+  }
+  .day-card.today{
+    background:linear-gradient(135deg, var(--accent-soft), transparent);
+    border-color:var(--accent);
+  }
+  .day-card.past{opacity:0.6;}
+  .day-card-head{
+    display:flex; align-items:center; justify-content:space-between;
+    margin-bottom:10px;
+  }
+  .day-card-info{display:flex; align-items:center; gap:10px;}
+  .day-num{
+    width:42px; height:42px; border-radius:10px;
+    background:var(--bg-elev); border:1px solid var(--border);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .day-card.today .day-num{background:var(--accent); border-color:var(--accent);}
+  .day-num-d{font-family:'Bebas Neue'; font-size:1.3rem; line-height:0.9;}
+  .day-num-m{font-size:0.55rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted);}
+  .day-card.today .day-num-d, .day-card.today .day-num-m{color:#fff;}
+  .day-name{font-family:'Bebas Neue'; font-size:1.15rem; letter-spacing:0.05em;}
+  .day-name-sub{font-size:0.65rem; color:var(--text-muted); letter-spacing:0.1em; text-transform:uppercase; font-weight:700;}
+  .day-add{
+    width:32px; height:32px; border-radius:8px;
+    background:var(--accent); color:#fff;
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  .day-activities{display:flex; flex-direction:column; gap:6px;}
+  .day-empty{
+    font-size:0.78rem; color:var(--text-muted);
+    padding:8px 0; font-style:italic;
+  }
+  .activity{
+    background:var(--bg-elev); border:1px solid var(--border);
+    border-radius:10px; padding:10px 12px;
+    display:flex; align-items:center; gap:10px;
+    position:relative;
+  }
+  .activity.completed{background:var(--success-soft); border-color:rgba(0,217,126,0.4);}
+  .activity-check{
+    width:22px; height:22px; flex-shrink:0;
+    border:2px solid var(--text-muted); border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; transition:all 0.2s;
+  }
+  .activity-check.checked{
+    background:var(--success); border-color:var(--success);
+  }
+  .activity-info{flex:1; min-width:0;}
+  .activity-name{font-weight:700; font-size:0.85rem;}
+  .activity-meta{font-size:0.68rem; color:var(--text-dim); margin-top:1px; font-family:'JetBrains Mono', monospace;}
+  .activity.completed .activity-name{text-decoration:line-through; color:var(--text-dim);}
+  .activity-actions{display:flex; gap:4px;}
+  .activity-btn{
+    width:30px; height:30px; border-radius:6px;
+    background:transparent; color:var(--text-muted);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .activity-btn:active{background:var(--bg-card-2); color:var(--text);}
+  .activity-btn.del:active{color:#ff4444;}
+
+  /* ============= MODAL AGREGAR ACTIVIDAD ============= */
+  .add-modal{
+    position:fixed; inset:0; z-index:300;
+    background:rgba(0,0,0,0.9);
+    backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+    display:none; align-items:flex-end; justify-content:center;
+  }
+  .add-modal.show{display:flex;}
+  .add-modal-inner{
+    background:var(--bg-card); border:1px solid var(--border-bright);
+    border-radius:18px 18px 0 0; padding:20px 18px;
+    width:100%; max-width:600px;
+    max-height:85vh; overflow-y:auto;
+    animation:slideUp 0.25s ease;
+    padding-bottom:calc(20px + var(--safe-bot));
+  }
+  .add-modal h3{font-size:1.4rem; margin-bottom:6px; color:var(--text);}
+  .add-modal-sub{font-size:0.78rem; color:var(--text-dim); margin-bottom:18px;}
+  .activity-type-grid{
+    display:grid; grid-template-columns:repeat(2,1fr); gap:8px;
+    margin-bottom:18px;
+  }
+  .activity-type-btn{
+    padding:14px 10px; border:1px solid var(--border);
+    background:var(--bg-elev); border-radius:10px;
+    display:flex; flex-direction:column; align-items:center; gap:6px;
+    transition:all 0.2s; cursor:pointer;
+  }
+  .activity-type-btn:active{transform:scale(0.97);}
+  .activity-type-btn.selected{background:var(--accent-soft); border-color:var(--accent);}
+  .activity-type-btn svg{width:24px; height:24px; color:var(--accent);}
+  .activity-type-btn span{font-size:0.78rem; font-weight:700;}
+
+  .routine-picker{
+    max-height:280px; overflow-y:auto;
+    display:flex; flex-direction:column; gap:6px;
+    margin-bottom:14px;
+  }
+  .routine-pick-item{
+    background:var(--bg-elev); border:1px solid var(--border);
+    border-radius:10px; padding:10px 12px;
+    text-align:left; display:flex; align-items:center; gap:10px;
+    transition:all 0.15s;
+  }
+  .routine-pick-item:active{transform:scale(0.99); border-color:var(--accent);}
+  .routine-pick-item.selected{background:var(--accent-soft); border-color:var(--accent);}
+  .routine-pick-icon{width:30px; height:30px; color:var(--accent); flex-shrink:0;}
+  .routine-pick-info{flex:1; min-width:0;}
+  .routine-pick-name{font-weight:700; font-size:0.85rem;}
+  .routine-pick-meta{font-size:0.68rem; color:var(--text-dim);}
+
+  .input-block{margin-bottom:12px;}
+  .input-label{font-size:0.7rem; color:var(--text-muted); letter-spacing:0.15em; text-transform:uppercase; font-weight:700; margin-bottom:6px;}
+  .input-block input, .input-block textarea, .input-block select{
+    width:100%; padding:10px 12px;
+    background:var(--bg-elev); border:1px solid var(--border);
+    border-radius:10px; color:var(--text);
+    font-size:0.9rem;
+  }
+  .input-block input:focus, .input-block textarea:focus, .input-block select:focus{outline:none; border-color:var(--accent);}
+  .input-block textarea{min-height:60px; resize:none;}
+  .input-row{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+
+  .modal-actions{display:flex; gap:8px; margin-top:6px;}
+  .btn-secondary{
+    flex:1; padding:12px; border-radius:10px;
+    background:var(--bg-elev); border:1px solid var(--border);
+    color:var(--text-dim); font-weight:700; font-size:0.85rem;
+  }
+  .btn-primary{
+    flex:1; padding:12px; border-radius:10px;
+    background:linear-gradient(135deg, var(--accent), var(--accent-2));
+    color:#fff; font-weight:700; font-size:0.85rem;
+    box-shadow:0 4px 12px rgba(255,61,0,0.3);
+  }
+
+  /* HISTORIAL */
+  .history-empty{
+    text-align:center; padding:60px 20px;
+    color:var(--text-muted);
+  }
+  .history-empty svg{width:60px; height:60px; opacity:0.3; margin-bottom:16px;}
+  .history-empty h3{font-size:1.4rem; margin-bottom:8px; color:var(--text-dim);}
+  .history-empty p{font-size:0.85rem; line-height:1.5;}
+
+  .history-item{
+    background:var(--bg-card); border:1px solid var(--border);
+    border-radius:12px; padding:14px; margin-bottom:10px;
+    display:flex; align-items:center; gap:12px;
+  }
+  .history-date{
+    width:48px; flex-shrink:0; text-align:center;
+    background:var(--bg-card-2); border-radius:10px; padding:8px 4px;
+  }
+  .history-day{font-family:'Bebas Neue'; font-size:1.5rem; color:var(--accent); line-height:1;}
+  .history-month{font-size:0.6rem; color:var(--text-muted); letter-spacing:0.15em; text-transform:uppercase; margin-top:2px;}
+  .history-info{flex:1; min-width:0;}
+  .history-routine{font-weight:700; font-size:0.88rem; margin-bottom:2px;}
+  .history-meta{font-size:0.7rem; color:var(--text-dim); font-family:'JetBrains Mono', monospace;}
+  .history-del{
+    background:transparent; border:1px solid var(--border);
+    color:var(--text-muted); padding:6px 10px; border-radius:8px;
+    font-size:0.7rem;
+  }
+
+  /* MODAL COMPLETAR */
+  .complete-modal{
+    position:fixed; inset:0; z-index:310;
+    background:rgba(0,0,0,0.9);
+    backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+    display:none; align-items:center; justify-content:center;
+    padding:20px;
+  }
+  .complete-modal.show{display:flex;}
+  .complete-modal-inner{
+    background:var(--bg-card); border:1px solid var(--border-bright);
+    border-radius:18px; padding:24px;
+    max-width:400px; width:100%;
+    animation:popIn 0.25s ease;
+  }
+  @keyframes popIn{from{transform:scale(0.9); opacity:0;}to{transform:scale(1); opacity:1;}}
+  .complete-modal h3{font-size:1.5rem; margin-bottom:6px; color:var(--accent);}
+  .complete-modal-sub{font-size:0.82rem; color:var(--text-dim); margin-bottom:18px;}
+  .rating-grid{
+    display:grid; grid-template-columns:repeat(5,1fr); gap:6px;
+    margin-bottom:14px;
+  }
+  .rating-btn{
+    aspect-ratio:1; border:1px solid var(--border); border-radius:10px;
+    background:var(--bg-elev); font-size:1.3rem;
+    transition:all 0.15s;
+  }
+  .rating-btn.selected{
+    background:var(--accent-soft); border-color:var(--accent);
+    transform:scale(1.05);
+  }
+
+  /* TOAST */
+  .toast{
+    position:fixed; bottom:100px; left:50%; transform:translateX(-50%);
+    background:var(--success); color:#000; padding:12px 20px;
+    border-radius:10px; font-weight:700; font-size:0.85rem;
+    z-index:400; opacity:0; transition:opacity 0.3s;
+    pointer-events:none;
+    max-width:90%; text-align:center;
+  }
+  .toast.show{opacity:1;}
+
+  /* AVISO */
+  .injury-notice{
+    background:linear-gradient(135deg, rgba(255,176,32,0.08), transparent);
+    border:1px solid rgba(255,176,32,0.3);
+    border-radius:12px; padding:11px 14px;
+    margin-bottom:16px; display:flex; gap:10px; align-items:flex-start;
+  }
+  .injury-notice svg{flex-shrink:0; color:var(--warn); width:18px; height:18px; margin-top:1px;}
+  .injury-notice-text{font-size:0.78rem; color:var(--text-dim); line-height:1.4;}
+  .injury-notice strong{color:var(--warn);}
+
+  /* CALCULADORA */
+  .calc-result{
+    background:linear-gradient(135deg, var(--accent-soft), transparent);
+    border:1px solid var(--accent);
+    border-radius:14px; padding:18px;
+    margin-top:14px;
+  }
+  .calc-result h4{font-family:'Bebas Neue'; font-size:1.2rem; margin-bottom:12px; color:var(--accent);}
+  .calc-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:14px;}
+  .calc-cell{
+    background:rgba(0,0,0,0.3); border-radius:10px; padding:10px;
+    text-align:center;
+  }
+  .calc-cell-num{font-family:'Bebas Neue'; font-size:1.6rem; color:#fff;}
+  .calc-cell-lbl{font-size:0.62rem; color:var(--text-dim); letter-spacing:0.1em; text-transform:uppercase; margin-top:2px;}
+  .calc-explainer{font-size:0.75rem; color:var(--text-dim); line-height:1.5;}
+
+  /* BOTTOM NAV */
+  .bottom-nav{
+    position:fixed; bottom:0; left:0; right:0; z-index:90;
+    background:rgba(10,10,10,0.95);
+    backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+    border-top:1px solid var(--border);
+    padding:6px 0;
+    padding-bottom:calc(6px + var(--safe-bot));
+    display:flex;
+  }
+  .nav-btn{
+    flex:1; padding:8px 4px;
+    display:flex; flex-direction:column; align-items:center; gap:3px;
+    color:var(--text-muted);
+    transition:color 0.2s;
+  }
+  .nav-btn svg{width:22px; height:22px;}
+  .nav-btn span{font-size:0.62rem; font-weight:700; letter-spacing:0.05em; text-transform:uppercase;}
+  .nav-btn.active{color:var(--accent);}
+
+  /* GUÍA HELPERS */
+  .info-card{
+    background:var(--bg-card); border:1px solid var(--border);
+    border-radius:12px; padding:14px; margin-bottom:10px;
+  }
+  .info-card h3{color:var(--accent); margin-bottom:8px;}
+  .info-card p{font-size:0.82rem; color:var(--text-dim); line-height:1.6; margin:0;}
+  .info-card strong{color:var(--text);}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-mark">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:#fff;">
+        <path d="M6.5 6.5L17.5 17.5"/><path d="M21 21L19 19"/><path d="M3 3L5 5"/>
+        <rect x="2" y="8" width="4" height="8" rx="1"/><rect x="18" y="8" width="4" height="8" rx="1"/>
+        <rect x="6" y="6" width="3" height="12" rx="1"/><rect x="15" y="6" width="3" height="12" rx="1"/>
+      </svg>
+    </div>
+    <div>
+      <div class="brand-name">FORJA</div>
+      <div class="brand-sub">Entrenamiento personal</div>
+    </div>
+  </div>
+  <div class="stats-pill" id="streak-pill">🔥 <strong id="streak-num">0</strong> días</div>
+</header>
+
+<div class="container">
+
+  <!-- ============= TAB: HOY ============= -->
+  <section id="tab-hoy">
+    <div class="hero">
+      <div class="hero-label" id="today-label">HOY</div>
+      <h1 id="today-title">¿Qué entrenamos?</h1>
+      <p>Recomendación inteligente según lo que vienes haciendo.</p>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="hero-stat-num" id="total-sessions">0</div>
+          <div class="hero-stat-lbl">Sesiones</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num" id="total-min">0</div>
+          <div class="hero-stat-lbl">Minutos</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num" id="week-sessions">0</div>
+          <div class="hero-stat-lbl">Esta semana</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="recommendation" id="recommendation-box"></div>
+
+    <div class="injury-notice">
+      <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+        <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+        <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+      </svg>
+      <div class="injury-notice-text">
+        <strong>Adaptado a vos:</strong> rutinas de bajo impacto en rodilla. Si un día sentís molestia, bajá un nivel sin culpa.
+      </div>
+    </div>
+  </section>
+
+  <!-- ============= TAB: PLAN ============= -->
+  <section id="tab-plan" style="display:none;">
+    <div class="hero">
+      <div class="hero-label">Tu semana</div>
+      <h1>Planificador</h1>
+      <p>Agendá entrenamientos, tenis, caminatas. Mové, editá o marcá completado con un toque.</p>
+    </div>
+
+    <div class="week-nav">
+      <button class="week-nav-btn" id="prev-week">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <div style="text-align:center;">
+        <div class="week-nav-label" id="week-label">Esta semana</div>
+        <div class="week-nav-sub" id="week-range"></div>
+      </div>
+      <button class="week-nav-btn" id="next-week">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+    </div>
+
+    <div id="week-days"></div>
+  </section>
+
+  <!-- ============= TAB: RUTINAS ============= -->
+  <section id="tab-rutinas" style="display:none;">
+    <div class="hero">
+      <div class="hero-label">Catálogo</div>
+      <h1>Rutinas</h1>
+      <p>16 rutinas adaptadas a tu equipamiento y a tu objetivo.</p>
+    </div>
+
+    <div class="cat-grid" id="cat-grid"></div>
+
+    <div class="section-title">
+      <h2 id="section-name">Todas las rutinas</h2>
+      <div class="section-title-line"></div>
+    </div>
+    <div id="routine-list"></div>
+  </section>
+
+  <!-- ============= TAB: HISTORIAL ============= -->
+  <section id="tab-historial" style="display:none;">
+    <div class="hero">
+      <div class="hero-label">Tu progreso</div>
+      <h1>Historial</h1>
+      <p>Cada entrenamiento que registres queda guardado en tu iPhone.</p>
+    </div>
+    <div id="history-list"></div>
+  </section>
+
+  <!-- ============= TAB: MÁS ============= -->
+  <section id="tab-mas" style="display:none;">
+    <div class="hero">
+      <div class="hero-label">Herramientas</div>
+      <h1>Calculadora y Guía</h1>
+      <p>Tu déficit calórico óptimo y consejos de uso.</p>
+    </div>
+
+    <h3 style="margin-bottom:12px; color:var(--text);">🔥 Calculadora de calorías</h3>
+    <div class="info-card">
+      <p style="margin-bottom:14px;">Calculá tu mantenimiento, déficit y proteína objetivo para bajar grasa sin perder músculo.</p>
+      <div class="input-row">
+        <div class="input-block">
+          <div class="input-label">Peso (kg)</div>
+          <input type="number" id="calc-peso" placeholder="ej: 95" inputmode="decimal">
+        </div>
+        <div class="input-block">
+          <div class="input-label">Altura (cm)</div>
+          <input type="number" id="calc-altura" placeholder="ej: 178" inputmode="numeric">
+        </div>
+      </div>
+      <div class="input-row">
+        <div class="input-block">
+          <div class="input-label">Edad</div>
+          <input type="number" id="calc-edad" placeholder="ej: 35" inputmode="numeric">
+        </div>
+        <div class="input-block">
+          <div class="input-label">Actividad</div>
+          <select id="calc-act">
+            <option value="1.375">Ligera (3 entren./sem)</option>
+            <option value="1.55" selected>Moderada (4-5/sem)</option>
+            <option value="1.725">Alta (6-7/sem)</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn-primary" id="calc-btn" style="width:100%; margin-top:6px;">Calcular</button>
+      <div id="calc-result" style="display:none;"></div>
+    </div>
+
+    <h3 style="margin:20px 0 12px; color:var(--text);">📚 Guía rápida</h3>
+
+    <div class="info-card">
+      <h3>📅 Plan semanal sugerido</h3>
+      <p>
+        <strong>Lun:</strong> Fuerza tren superior<br>
+        <strong>Mar:</strong> Tenis (1h)<br>
+        <strong>Mié:</strong> Cardio metabólico<br>
+        <strong>Jue:</strong> Tenis (1h) o descanso<br>
+        <strong>Vie:</strong> Fuerza tren inferior<br>
+        <strong>Sáb:</strong> Tenis + caminata cinta<br>
+        <strong>Dom:</strong> Movilidad o descanso
+      </p>
+    </div>
+
+    <div class="info-card">
+      <h3>🎾 Reglas inteligentes</h3>
+      <p>El recomendador del día evita: fuerza misma zona dos días seguidos, pierna intensa antes de tenis, cardio fuerte el día después de tenis duro. Si igual querés hacerlo, podés.</p>
+    </div>
+
+    <div class="info-card">
+      <h3>💪 Para bajar grasa</h3>
+      <p>El 70% es <strong>alimentación</strong>: déficit moderado (300-500 kcal/día), proteína alta (1.6-2g/kg), agua. La app te asegura el otro 30%: gasto + músculo conservado.</p>
+    </div>
+
+    <div class="info-card">
+      <h3>📲 Agregar al iPhone</h3>
+      <p>Safari → botón Compartir → "Agregar a pantalla de inicio". Te queda como ícono de app, abre en pantalla completa, y los datos se guardan localmente.</p>
+    </div>
+
+    <div class="info-card">
+      <h3>💾 Backup de datos</h3>
+      <p>Tus datos viven en este navegador. Para hacer backup tocá el botón abajo. Para restaurar, pegá el JSON que exportes.</p>
+      <div style="display:flex; gap:8px; margin-top:10px;">
+        <button class="btn-secondary" id="export-btn">Exportar</button>
+        <button class="btn-secondary" id="import-btn">Importar</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ============= BOTTOM NAV ============= -->
+<nav class="bottom-nav">
+  <button class="nav-btn active" data-tab="hoy">
+    <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    <span>Hoy</span>
+  </button>
+  <button class="nav-btn" data-tab="plan">
+    <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    <span>Plan</span>
+  </button>
+  <button class="nav-btn" data-tab="rutinas">
+    <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M14.4 14.4 9.6 9.6"/><path d="M18.657 21.485a2 2 0 1 1-2.829-2.828l-1.767 1.768a2 2 0 1 1-2.829-2.829l6.364-6.364a2 2 0 1 1 2.829 2.829l-1.768 1.767a2 2 0 1 1 2.828 2.829z"/><path d="m21.5 21.5-1.4-1.4"/><path d="M3.9 3.9 2.5 2.5"/><path d="M6.404 12.768a2 2 0 1 1-2.829-2.829l1.768-1.767a2 2 0 1 1-2.828-2.829l2.828-2.828a2 2 0 1 1 2.829 2.828l1.767-1.768a2 2 0 1 1 2.829 2.829z"/></svg>
+    <span>Rutinas</span>
+  </button>
+  <button class="nav-btn" data-tab="historial">
+    <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>
+    <span>Historial</span>
+  </button>
+  <button class="nav-btn" data-tab="mas">
+    <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    <span>Más</span>
+  </button>
+</nav>
+
+<!-- ============= MODAL DETALLE RUTINA ============= -->
+<div class="modal-overlay" id="modal-overlay"></div>
+<div class="modal" id="modal">
+  <div class="modal-head">
+    <button class="back-btn" id="modal-close">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+    </button>
+    <div class="modal-title" id="modal-title-bar"></div>
+  </div>
+  <div class="modal-body" id="modal-body"></div>
+</div>
+
+<div class="complete-bar" id="complete-bar">
+  <button class="schedule-btn" id="schedule-btn" title="Agendar">
+    <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+  </button>
+  <button class="complete-btn" id="complete-btn">✓ Completar entrenamiento</button>
+</div>
+
+<!-- ============= MODAL AGREGAR AL PLAN ============= -->
+<div class="add-modal" id="add-modal">
+  <div class="add-modal-inner">
+    <h3 id="add-modal-title">Agregar al plan</h3>
+    <div class="add-modal-sub" id="add-modal-sub">Elegí qué actividad querés agendar</div>
+
+    <div class="input-block">
+      <div class="input-label">Tipo de actividad</div>
+      <div class="activity-type-grid" id="activity-type-grid">
+        <button class="activity-type-btn selected" data-type="rutina">
+          <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M14.4 14.4 9.6 9.6"/><path d="M18.657 21.485a2 2 0 1 1-2.829-2.828l-1.767 1.768a2 2 0 1 1-2.829-2.829l6.364-6.364a2 2 0 1 1 2.829 2.829l-1.768 1.767a2 2 0 1 1 2.828 2.829z"/><path d="m21.5 21.5-1.4-1.4"/><path d="M3.9 3.9 2.5 2.5"/><path d="M6.404 12.768a2 2 0 1 1-2.829-2.829l1.768-1.767a2 2 0 1 1-2.828-2.829l2.828-2.828a2 2 0 1 1 2.829 2.828l1.767-1.768a2 2 0 1 1 2.829 2.829z"/></svg>
+          <span>Rutina app</span>
+        </button>
+        <button class="activity-type-btn" data-type="tenis">
+          <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M5.07 19A10 10 0 0 1 17 5.5"/><path d="M18.93 5A10 10 0 0 1 7 18.5"/></svg>
+          <span>Tenis</span>
+        </button>
+        <button class="activity-type-btn" data-type="caminata">
+          <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="13" cy="4" r="2"/><path d="M4 17l5-1 .75-1.5"/><path d="M15 21l-3-6 1-5 4 2 4-1"/><path d="M8 14l3-3"/></svg>
+          <span>Caminata</span>
+        </button>
+        <button class="activity-type-btn" data-type="otro">
+          <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+          <span>Otro</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="input-block" id="routine-picker-block">
+      <div class="input-label">Elegí la rutina</div>
+      <div class="routine-picker" id="routine-picker"></div>
+    </div>
+
+    <div class="input-block" id="custom-name-block" style="display:none;">
+      <div class="input-label">Nombre</div>
+      <input type="text" id="custom-name" placeholder="ej: Tenis con Pablo">
+    </div>
+
+    <div class="input-row">
+      <div class="input-block">
+        <div class="input-label">Día</div>
+        <input type="date" id="add-date">
+      </div>
+      <div class="input-block">
+        <div class="input-label">Duración (min)</div>
+        <input type="number" id="add-duration" inputmode="numeric" placeholder="60">
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-secondary" id="add-cancel">Cancelar</button>
+      <button class="btn-primary" id="add-save">Agendar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============= MODAL COMPLETAR ============= -->
+<div class="complete-modal" id="complete-modal">
+  <div class="complete-modal-inner">
+    <h3>¡Bien ahí! 💪</h3>
+    <div class="complete-modal-sub">Registremos cómo te fue</div>
+
+    <div class="input-label">¿Cómo te sentiste?</div>
+    <div class="rating-grid" id="rating-grid">
+      <button class="rating-btn" data-r="1">😩</button>
+      <button class="rating-btn" data-r="2">😕</button>
+      <button class="rating-btn selected" data-r="3">😐</button>
+      <button class="rating-btn" data-r="4">😊</button>
+      <button class="rating-btn" data-r="5">🔥</button>
+    </div>
+
+    <div class="input-block">
+      <div class="input-label">Notas (opcional)</div>
+      <textarea id="session-notes" placeholder="Pesos usados, sensaciones..."></textarea>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-secondary" id="cancel-complete">Cancelar</button>
+      <button class="btn-primary" id="save-session">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// =========================================================================
+// SVG ICONS
+// =========================================================================
+const ICONS = {
+  dumbbell: '<svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.4 14.4 9.6 9.6"/><path d="M18.657 21.485a2 2 0 1 1-2.829-2.828l-1.767 1.768a2 2 0 1 1-2.829-2.829l6.364-6.364a2 2 0 1 1 2.829 2.829l-1.768 1.767a2 2 0 1 1 2.828 2.829z"/><path d="m21.5 21.5-1.4-1.4"/><path d="M3.9 3.9 2.5 2.5"/><path d="M6.404 12.768a2 2 0 1 1-2.829-2.829l1.768-1.767a2 2 0 1 1-2.828-2.829l2.828-2.828a2 2 0 1 1 2.829 2.828l1.767-1.768a2 2 0 1 1 2.829 2.829z"/></svg>',
+  heart: '<svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg>',
+  tennis: '<svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M5.07 19A10 10 0 0 1 17 5.5"/><path d="M18.93 5A10 10 0 0 1 7 18.5"/></svg>',
+  run: '<svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13" cy="4" r="2"/><path d="M4 17l5-1 .75-1.5"/><path d="M15 21l-3-6 1-5 4 2 4-1"/><path d="M8 14l3-3"/></svg>',
+  flame: '<svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>',
+  clock: '<svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+  zap: '<svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+  history: '<svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>',
+  arrow: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>',
+  edit: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>',
+  trash: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>',
+  check: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+};
+
+// =========================================================================
+// CATEGORÍAS Y RUTINAS
+// =========================================================================
+const CATEGORIES = [
+  { id: 'all', name: 'Todas', icon: 'flame' },
+  { id: 'fuerza', name: 'Fuerza', icon: 'dumbbell' },
+  { id: 'cardio', name: 'Cardio', icon: 'heart' },
+  { id: 'tenis', name: 'Tenis', icon: 'tennis' },
+  { id: 'running', name: 'Cinta/Run', icon: 'run' },
+];
+
+// muscleGroups indica qué zonas trabaja la rutina (para el recomendador)
+// 'pierna' = piernas/cadera; 'superior' = pecho/espalda/hombro/brazo; 'core' = abdomen
+const ROUTINES = [
+  // ============ FUERZA (4) ============
+  {
+    id: 'f1', cat: 'fuerza', icon: 'dumbbell',
+    title: 'Tren superior — Empuje y tirón',
+    desc: 'Pecho, espalda, hombros y brazos con mancuernas y bandas.',
+    level: 2, duration: 45, calories: '~280 kcal',
+    tags: ['Mancuernas', 'Bandas', 'Pecho/Espalda'],
+    muscleGroups: ['superior'],
+    notes: 'Calentá 5 min con movilidad de hombros antes de arrancar.',
+    exercises: [
+      { name: 'Press de pecho con mancuernas', target: 'Pectoral mayor', sets: 4, reps: '10-12', rest: '60s', weight: '8-12kg c/u', note: 'Acostado en el piso si no tenés banco. Bajá hasta que codo toque suelo.' },
+      { name: 'Remo a un brazo', target: 'Dorsal y romboides', sets: 4, reps: '10 c/lado', rest: '60s', weight: '12-15kg', note: 'Apoyado en silla con la otra mano. Llevá el codo hacia atrás.' },
+      { name: 'Press militar sentado', target: 'Deltoides', sets: 3, reps: '10-12', rest: '60s', weight: '8-10kg c/u', note: 'Sentado en silla con espalda recta, no arquees lumbar.' },
+      { name: 'Apertura con mancuernas', target: 'Pectoral', sets: 3, reps: '12-15', rest: '45s', weight: '5-8kg c/u', note: 'Movimiento amplio y controlado, codos levemente flexionados.' },
+      { name: 'Curl de bíceps alterno', target: 'Bíceps', sets: 3, reps: '12 c/lado', rest: '45s', weight: '8-12kg', note: 'Sin mecer el cuerpo. Si te balanceás, bajá el peso.' },
+      { name: 'Extensión tríceps con banda', target: 'Tríceps', sets: 3, reps: '15', rest: '45s', weight: 'Banda media', note: 'Banda atada arriba (puerta). Codos pegados al cuerpo.' },
+      { name: 'Face pull con banda', target: 'Hombro posterior', sets: 3, reps: '15', rest: '40s', weight: 'Banda media', note: 'Excelente para postura y prevención de lesiones de hombro.' },
+    ]
+  },
+  {
+    id: 'f2', cat: 'fuerza', icon: 'dumbbell',
+    title: 'Tren inferior — Fuerza y estabilidad',
+    desc: 'Piernas y glúteos. Construye potencia y protege rodilla.',
+    level: 2, duration: 45, calories: '~320 kcal',
+    tags: ['Mancuernas', 'Bandas', 'Piernas'],
+    muscleGroups: ['pierna'],
+    notes: 'Movilidad de cadera + activación de glúteo (5 min). NO bajes en sentadillas más de 90° si sentís molestia.',
+    exercises: [
+      { name: 'Sentadilla goblet', target: 'Cuádriceps y glúteo', sets: 4, reps: '12', rest: '75s', weight: '12-15kg', note: 'Mancuerna abrazada al pecho. Bajá controlado hasta 90°.' },
+      { name: 'Peso muerto rumano', target: 'Isquios y glúteo', sets: 4, reps: '12', rest: '75s', weight: '12kg c/u', note: 'Espalda recta, cadera atrás. Sentí estiramiento detrás del muslo.' },
+      { name: 'Zancada estática', target: 'Pierna unilateral', sets: 3, reps: '10 c/lado', rest: '60s', weight: '8-10kg c/u', note: 'No saltes, paso firme. Si rodilla derecha molesta, sin peso.' },
+      { name: 'Hip thrust con mancuerna', target: 'Glúteo', sets: 4, reps: '15', rest: '60s', weight: '12-15kg', note: 'Hombros apoyados en sofá/silla. Apretá glúteo arriba.' },
+      { name: 'Elevación de pantorrilla', target: 'Gemelos', sets: 3, reps: '15-20', rest: '45s', weight: '8kg c/u', note: 'En el escalón si tenés. Importante para tenis.' },
+      { name: 'Abducción con banda', target: 'Glúteo medio', sets: 3, reps: '15 c/lado', rest: '40s', weight: 'Banda media', note: 'Banda en tobillos. Clave para estabilidad de rodilla.' },
+    ]
+  },
+  {
+    id: 'f3', cat: 'fuerza', icon: 'dumbbell',
+    title: 'Full body — Fuerza completa',
+    desc: 'Todo el cuerpo en una sesión eficiente.',
+    level: 2, duration: 40, calories: '~300 kcal',
+    tags: ['Mancuernas', 'Full body', 'Eficiente'],
+    muscleGroups: ['pierna', 'superior', 'core'],
+    notes: 'Calentamiento general 5 min: brazos, cadera, rodillas en círculos.',
+    exercises: [
+      { name: 'Sentadilla goblet', target: 'Piernas', sets: 3, reps: '12', rest: '60s', weight: '12kg', note: 'Profundidad cómoda, rodilla estable.' },
+      { name: 'Press de pecho piso', target: 'Pecho', sets: 3, reps: '12', rest: '60s', weight: '10kg c/u', note: 'En el piso, codos a 45° del cuerpo.' },
+      { name: 'Remo inclinado a dos manos', target: 'Espalda', sets: 3, reps: '12', rest: '60s', weight: '10kg c/u', note: 'Tronco a 45°, espalda recta, codos hacia atrás.' },
+      { name: 'Peso muerto rumano', target: 'Posterior', sets: 3, reps: '12', rest: '60s', weight: '12kg c/u', note: 'Cadera atrás, espalda neutra.' },
+      { name: 'Press militar', target: 'Hombros', sets: 3, reps: '10', rest: '60s', weight: '8kg c/u', note: 'Sentado o parado, sin arquear la espalda.' },
+      { name: 'Plancha frontal', target: 'Core', sets: 3, reps: '40s', rest: '30s', weight: '—', note: 'Línea recta de cabeza a talones.' },
+    ]
+  },
+  {
+    id: 'f4', cat: 'fuerza', icon: 'flame',
+    title: 'Full body — Metabólico',
+    desc: 'Fuerza con descansos cortos. Sube las pulsaciones.',
+    level: 3, duration: 40, calories: '~380 kcal',
+    tags: ['Mancuernas', 'Quema grasa', 'Intenso'],
+    muscleGroups: ['pierna', 'superior', 'core'],
+    notes: 'Versión "encendida" del full body. Si te marea, descansá más.',
+    exercises: [
+      { name: 'Sentadilla goblet + press', target: 'Piernas + hombros', sets: 4, reps: '12', rest: '40s', weight: '10-12kg', note: 'Bajás en sentadilla, al subir presionás arriba. Movimiento fluido.' },
+      { name: 'Remo + curl', target: 'Espalda + bíceps', sets: 4, reps: '10', rest: '40s', weight: '8-10kg c/u', note: 'Tronco inclinado: remo, bajás brazo, curl, repetís.' },
+      { name: 'Peso muerto + remo alto', target: 'Posterior + hombro', sets: 4, reps: '10', rest: '40s', weight: '8-10kg c/u', note: 'Bajás, al subir levantás mancuernas hasta pecho.' },
+      { name: 'Zancada inversa alterna', target: 'Piernas', sets: 3, reps: '10 c/lado', rest: '40s', weight: '8kg c/u', note: 'Paso atrás, no adelante (más amable con la rodilla).' },
+      { name: 'Mountain climbers lento', target: 'Core + cardio', sets: 3, reps: '30s', rest: '30s', weight: '—', note: 'Lento y controlado, no corriendo.' },
+      { name: 'Plancha lateral', target: 'Oblicuos', sets: 2, reps: '30s c/lado', rest: '30s', weight: '—', note: 'Cadera levantada, línea recta.' },
+    ]
+  },
+
+  // ============ CARDIO (4) ============
+  {
+    id: 'c1', cat: 'cardio', icon: 'heart',
+    title: 'Circuito metabólico bajo impacto',
+    desc: 'Eleva pulsaciones sin saltos. Cuida la rodilla.',
+    level: 1, duration: 30, calories: '~280 kcal',
+    tags: ['Sin saltos', 'Mancuernas', 'Bandas'],
+    muscleGroups: ['cardio', 'pierna', 'superior'],
+    notes: '4 vueltas al circuito. Si te cuesta, descansá 60s entre vueltas.',
+    exercises: [
+      { name: 'Marcha alta en el lugar', target: 'Cardio', sets: 4, reps: '45s', rest: '15s', weight: '—', note: 'Rodillas hasta cintura. Sin saltar.' },
+      { name: 'Sentadilla con mancuerna', target: 'Piernas', sets: 4, reps: '15', rest: '15s', weight: '8kg', note: 'Ritmo constante, no rápido sin control.' },
+      { name: 'Remo bilateral inclinado', target: 'Espalda', sets: 4, reps: '12', rest: '15s', weight: '8kg c/u', note: 'Tronco a 45°.' },
+      { name: 'Press de hombros', target: 'Hombros', sets: 4, reps: '12', rest: '15s', weight: '5-8kg c/u', note: 'Parado, controlado.' },
+      { name: 'Step-ups en silla baja', target: 'Piernas + cardio', sets: 4, reps: '10 c/lado', rest: '15s', weight: '5kg c/u', note: 'Subí con pie completo. Silla firme.' },
+      { name: 'Boxeo en sombra', target: 'Cardio + hombros', sets: 4, reps: '45s', rest: '60s', weight: '—', note: 'Jab, jab, cross. Excelente para tenis.' },
+    ]
+  },
+  {
+    id: 'c2', cat: 'cardio', icon: 'flame',
+    title: 'HIIT con mancuernas — Quemador',
+    desc: 'Alta intensidad por intervalos. Rápida quema de grasa.',
+    level: 3, duration: 25, calories: '~340 kcal',
+    tags: ['HIIT', 'Mancuernas', 'Avanzado'],
+    muscleGroups: ['cardio', 'pierna', 'superior'],
+    notes: 'Tabata: 40s trabajo + 20s descanso × 8 rondas por ejercicio. Sin saltos.',
+    exercises: [
+      { name: 'Thrusters (sentadilla + press)', target: 'Full body', sets: 4, reps: '40s/20s', rest: '60s', weight: '5-8kg c/u', note: 'Bajás, al subir empujás arriba.' },
+      { name: 'Renegade row', target: 'Espalda + core', sets: 4, reps: '40s/20s', rest: '60s', weight: '5-8kg c/u', note: 'Plancha agarrando mancuernas, remás de a una.' },
+      { name: 'Marcha cargada rápida', target: 'Piernas + cardio', sets: 4, reps: '40s/20s', rest: '60s', weight: '8kg c/u', note: 'Marcha alta cargando peso, ritmo elevado.' },
+      { name: 'Swing con mancuerna', target: 'Cadena posterior', sets: 4, reps: '40s/20s', rest: '—', weight: '12kg', note: 'Cadera explosiva, no brazos.' },
+    ]
+  },
+  {
+    id: 'c3', cat: 'cardio', icon: 'heart',
+    title: 'Cinta — Caminata quemagrasa',
+    desc: 'Tu mejor herramienta. Pendiente alta, cero impacto.',
+    level: 1, duration: 40, calories: '~350 kcal',
+    tags: ['Cinta', 'Sin impacto', 'Zona 2'],
+    muscleGroups: ['cardio'],
+    notes: 'Hacelo post-fuerza o por la mañana en ayunas.',
+    exercises: [
+      { name: 'Calentamiento — caminata plana', target: 'Activación', sets: 1, reps: '5 min', rest: '—', weight: 'Inclinación 0%, vel 4 km/h', note: 'Subí gradualmente la velocidad.' },
+      { name: 'Bloque 1 — pendiente media', target: 'Quema sostenida', sets: 1, reps: '10 min', rest: '—', weight: 'Inclinación 8%, vel 5 km/h', note: 'Postura erguida.' },
+      { name: 'Bloque 2 — pendiente alta', target: 'Quema máxima', sets: 1, reps: '15 min', rest: '—', weight: 'Inclinación 12%, vel 4.5 km/h', note: 'Aquí está el oro. NO te agarres del manubrio.' },
+      { name: 'Bloque 3 — recuperación', target: 'Bajada de pulsaciones', sets: 1, reps: '7 min', rest: '—', weight: 'Inclinación 5%, vel 4.5 km/h', note: 'Bajá inclinación gradualmente.' },
+      { name: 'Vuelta a la calma', target: 'Recuperación', sets: 1, reps: '3 min', rest: '—', weight: 'Inclinación 0%, vel 3.5 km/h', note: 'Respirá profundo. Hidratate.' },
+    ]
+  },
+  {
+    id: 'c4', cat: 'cardio', icon: 'zap',
+    title: 'Tabata bandas + cinta',
+    desc: 'Combo corto e intenso: bandas + cinta.',
+    level: 2, duration: 30, calories: '~310 kcal',
+    tags: ['Bandas', 'Cinta', 'Mixto'],
+    muscleGroups: ['cardio', 'pierna', 'superior'],
+    notes: 'Alterná 4 min cinta + 4 min ejercicios con banda. Repetí 3 veces.',
+    exercises: [
+      { name: 'Calentamiento cinta', target: 'Activación', sets: 1, reps: '5 min', rest: '—', weight: 'Inclinación 5%, vel 4.5 km/h', note: 'Movilidad de brazos.' },
+      { name: 'Bloque cinta intenso', target: 'Cardio', sets: 3, reps: '4 min', rest: '—', weight: 'Inclinación 10-12%, vel 5 km/h', note: 'Mantené el ritmo.' },
+      { name: 'Bloque banda — sentadilla + press', target: 'Piernas + hombros', sets: 3, reps: '4 min', rest: '—', weight: 'Banda media', note: 'Pisás banda, sentadilla + press arriba.' },
+      { name: 'Vuelta a la calma', target: 'Recuperación', sets: 1, reps: '5 min', rest: '—', weight: 'Inclinación 0%, vel 3.5 km/h', note: 'Estiramiento al bajar.' },
+    ]
+  },
+
+  // ============ TENIS (4) ============
+  {
+    id: 't1', cat: 'tenis', icon: 'tennis',
+    title: 'Movilidad y activación pre-partido',
+    desc: 'Para hacer ANTES de jugar. Te previene lesiones.',
+    level: 1, duration: 15, calories: '~80 kcal',
+    tags: ['Pre-partido', 'Movilidad'],
+    muscleGroups: ['movilidad'],
+    notes: 'Hacelo siempre antes de la cancha.',
+    exercises: [
+      { name: 'Marcha alta + giros de tronco', target: 'Cadera + rotación', sets: 1, reps: '2 min', rest: '—', weight: '—', note: 'Rodilla arriba mientras girás el tronco al lado contrario.' },
+      { name: 'Círculos de hombros', target: 'Articulación hombro', sets: 2, reps: '15 c/dirección', rest: '—', weight: '—', note: 'Adelante y atrás.' },
+      { name: 'Cariocas', target: 'Cadera + coordinación', sets: 4, reps: '15m c/lado', rest: '15s', weight: '—', note: 'Movimiento lateral cruzando piernas.' },
+      { name: 'Squat lento + apertura cadera', target: 'Movilidad', sets: 2, reps: '10', rest: '—', weight: '—', note: 'Bajás, abrís rodillas con codos.' },
+      { name: 'Estocadas con rotación', target: 'Cadera + tronco', sets: 2, reps: '8 c/lado', rest: '—', weight: '—', note: 'Estocada adelante + giro de tronco.' },
+      { name: 'Press hombros con banda', target: 'Activación hombro', sets: 2, reps: '15', rest: '—', weight: 'Banda suave', note: 'Activación, no fuerza.' },
+      { name: 'Sprints cortos progresivos', target: 'Activación cardio', sets: 4, reps: '15m', rest: '20s', weight: '—', note: '60% > 70% > 80% > 85%. NO al 100%.' },
+    ]
+  },
+  {
+    id: 't2', cat: 'tenis', icon: 'zap',
+    title: 'Fuerza específica para tenis',
+    desc: 'Potencia rotacional, hombros, piernas explosivas.',
+    level: 2, duration: 40, calories: '~290 kcal',
+    tags: ['Rotación', 'Potencia'],
+    muscleGroups: ['superior', 'pierna', 'core'],
+    notes: 'Hacelo en días que NO jugás.',
+    exercises: [
+      { name: 'Russian twist con mancuerna', target: 'Oblicuos', sets: 4, reps: '20 (10 c/lado)', rest: '45s', weight: '5-8kg', note: 'Sentado, pies arriba si podés.' },
+      { name: 'Wood chop con banda', target: 'Rotación funcional', sets: 4, reps: '12 c/lado', rest: '45s', weight: 'Banda media', note: 'SIMULA el golpe de tenis.' },
+      { name: 'Sentadilla + lanzamiento', target: 'Potencia piernas', sets: 4, reps: '8', rest: '60s', weight: '5kg c/u', note: 'Sentadilla, al subir extendés brazos arriba con fuerza (sin saltar).' },
+      { name: 'Press unilateral parado', target: 'Hombro + core', sets: 3, reps: '10 c/lado', rest: '45s', weight: '8kg', note: 'Activá core para no inclinarte.' },
+      { name: 'Step lateral con banda', target: 'Cadera lateral', sets: 3, reps: '12 c/lado', rest: '45s', weight: 'Banda media', note: 'Para footwork.' },
+      { name: 'Plancha con toque hombro', target: 'Core estabilizador', sets: 3, reps: '20', rest: '45s', weight: '—', note: 'Caderas estables.' },
+    ]
+  },
+  {
+    id: 't3', cat: 'tenis', icon: 'zap',
+    title: 'Agilidad y footwork',
+    desc: 'Velocidad de pies y reacción.',
+    level: 2, duration: 30, calories: '~250 kcal',
+    tags: ['Agilidad', 'Pies'],
+    muscleGroups: ['pierna', 'cardio'],
+    notes: 'Espacio de 5x5m. Te lleva al siguiente nivel.',
+    exercises: [
+      { name: 'Skipping bajo', target: 'Velocidad de pies', sets: 4, reps: '30s', rest: '30s', weight: '—', note: 'Pies rápidos al piso, contacto mínimo.' },
+      { name: 'Side shuffle', target: 'Desplazamiento lateral', sets: 4, reps: '30s', rest: '30s', weight: '—', note: 'Pasos laterales, sin cruzar pies.' },
+      { name: 'Box drill', target: 'Cambios de dirección', sets: 4, reps: '4 vueltas', rest: '45s', weight: '—', note: 'Marcá 4 esquinas (3m). Adelante, lateral, atrás, lateral.' },
+      { name: 'Sprint corto + frenada', target: 'Aceleración + control', sets: 6, reps: '10m', rest: '30s', weight: '—', note: 'Sprint y frená seco como para devolver bola.' },
+      { name: 'Reacción visual', target: 'Reflejos', sets: 4, reps: '30s', rest: '45s', weight: '—', note: 'Pies en split-step, marcate movimientos sin patrón.' },
+      { name: 'Saltos al cajón bajos', target: 'Potencia controlada', sets: 3, reps: '8', rest: '60s', weight: '—', note: 'Cajón BAJO (20cm). Subís suave, bajás caminando.' },
+    ]
+  },
+  {
+    id: 't4', cat: 'tenis', icon: 'heart',
+    title: 'Prevención — Hombro, codo y lumbar',
+    desc: 'Mantenimiento. Previene epicondilitis y dolor de espalda.',
+    level: 1, duration: 25, calories: '~140 kcal',
+    tags: ['Prevención', 'Bandas'],
+    muscleGroups: ['movilidad', 'superior'],
+    notes: '2 veces por semana, sobre todo después de jugar.',
+    exercises: [
+      { name: 'Rotación externa con banda', target: 'Manguito rotador', sets: 3, reps: '15 c/lado', rest: '30s', weight: 'Banda suave', note: 'Codo pegado al cuerpo.' },
+      { name: 'Rotación interna con banda', target: 'Manguito rotador', sets: 3, reps: '15 c/lado', rest: '30s', weight: 'Banda suave', note: 'Inverso al anterior.' },
+      { name: 'Face pull con banda', target: 'Hombro posterior', sets: 3, reps: '15', rest: '30s', weight: 'Banda media', note: 'Banda a altura de la cara.' },
+      { name: 'Pronación-supinación', target: 'Antebrazo (codo)', sets: 3, reps: '15 c/lado', rest: '30s', weight: '2-3kg', note: 'Previene epicondilitis.' },
+      { name: 'Wrist curl', target: 'Antebrazo flexor', sets: 3, reps: '15', rest: '30s', weight: '5kg', note: 'Flexionás muñeca arriba.' },
+      { name: 'Bird dog', target: 'Estabilidad lumbar', sets: 3, reps: '10 c/lado', rest: '30s', weight: '—', note: 'Extendés brazo y pierna contraria.' },
+      { name: 'Dead bug', target: 'Core profundo', sets: 3, reps: '10 c/lado', rest: '30s', weight: '—', note: 'Sin arquear lumbar.' },
+      { name: 'Estiramiento gato-vaca', target: 'Movilidad columna', sets: 1, reps: '2 min', rest: '—', weight: '—', note: 'Cierre suave.' },
+    ]
+  },
+
+  // ============ RUNNING / CINTA (4) ============
+  {
+    id: 'r1', cat: 'running', icon: 'run',
+    title: 'Cinta — Z2 quemagrasa larga',
+    desc: 'Sesión larga en zona aeróbica baja.',
+    level: 1, duration: 50, calories: '~440 kcal',
+    tags: ['Zona 2', 'Cinta'],
+    muscleGroups: ['cardio'],
+    notes: 'Si podés mantener una conversación, estás en zona correcta.',
+    exercises: [
+      { name: 'Calentamiento', target: 'Activación', sets: 1, reps: '5 min', rest: '—', weight: 'Plana, vel 4 km/h', note: 'Caminata suave.' },
+      { name: 'Subida progresiva', target: 'Adaptación', sets: 1, reps: '5 min', rest: '—', weight: 'Inclinación 5-8%, vel 5 km/h', note: 'Subís inclinación de a poco.' },
+      { name: 'Bloque principal', target: 'Quema grasa', sets: 1, reps: '30 min', rest: '—', weight: 'Inclinación 10%, vel 5 km/h', note: 'Sostenido.' },
+      { name: 'Vuelta a la calma', target: 'Recuperación', sets: 1, reps: '10 min', rest: '—', weight: 'Bajada gradual', note: 'Bajás cada 2 min hasta plana 3.5 km/h.' },
+    ]
+  },
+  {
+    id: 'r2', cat: 'running', icon: 'zap',
+    title: 'Cinta — Intervalos de pendiente',
+    desc: 'Alta intensidad sin trotar. Conserva las rodillas.',
+    level: 2, duration: 35, calories: '~370 kcal',
+    tags: ['Intervalos', 'Cinta'],
+    muscleGroups: ['cardio'],
+    notes: 'Intervalos juega con la INCLINACIÓN, no con la velocidad.',
+    exercises: [
+      { name: 'Calentamiento', target: 'Activación', sets: 1, reps: '5 min', rest: '—', weight: 'Inclinación 5%, vel 4.5', note: '—' },
+      { name: 'Intervalo "duro"', target: 'Pulsaciones altas', sets: 8, reps: '90s', rest: '90s', weight: 'Inclinación 12-15%, vel 5 km/h', note: 'Te debe costar respirar.' },
+      { name: 'Recuperación', target: 'Bajar pulso', sets: 0, reps: '90s', rest: '—', weight: 'Inclinación 3%, vel 4 km/h', note: 'Caminata suave.' },
+      { name: 'Vuelta a la calma', target: 'Recuperación', sets: 1, reps: '5 min', rest: '—', weight: 'Plana, vel 3.5 km/h', note: 'Estiramiento.' },
+    ]
+  },
+  {
+    id: 'r3', cat: 'running', icon: 'run',
+    title: 'Trote suave outdoor',
+    desc: 'Cuando hace lindo. Distancia corta, ritmo cómodo.',
+    level: 2, duration: 30, calories: '~280 kcal',
+    tags: ['Outdoor', 'Trote'],
+    muscleGroups: ['cardio'],
+    notes: 'Solo si la rodilla está bien. EVITÁ asfalto duro.',
+    exercises: [
+      { name: 'Caminata + movilidad', target: 'Calentamiento', sets: 1, reps: '5 min', rest: '—', weight: '—', note: 'Círculos de tobillos y rodillas.' },
+      { name: 'Trote suave', target: 'Cardio', sets: 1, reps: '15-20 min', rest: '—', weight: 'Ritmo conversación', note: 'Si te falta aire, alterná 2 min trote / 1 min camino.' },
+      { name: 'Caminata rápida final', target: 'Recuperación', sets: 1, reps: '5 min', rest: '—', weight: '—', note: 'Bajás pulsaciones.' },
+      { name: 'Estiramiento', target: 'Flexibilidad', sets: 1, reps: '5 min', rest: '—', weight: '—', note: 'Cuádriceps, isquios, gemelos, glúteo.' },
+    ]
+  },
+  {
+    id: 'r4', cat: 'running', icon: 'flame',
+    title: 'Cinta + circuito — Combo final',
+    desc: 'Cinta intensa + ejercicios de fuerza intercalados.',
+    level: 3, duration: 45, calories: '~480 kcal',
+    tags: ['Combo', 'Avanzado'],
+    muscleGroups: ['cardio', 'pierna', 'superior'],
+    notes: 'Para días de mucha energía. Alterná 5 min cinta + ejercicios.',
+    exercises: [
+      { name: 'Calentamiento', target: 'Activación', sets: 1, reps: '5 min', rest: '—', weight: 'Cinta inclinación 5%, vel 4.5', note: '—' },
+      { name: 'Cinta — bloque 1', target: 'Cardio', sets: 1, reps: '5 min', rest: '—', weight: 'Inclinación 10%, vel 5 km/h', note: 'Sostenido.' },
+      { name: 'Circuito 1: sentadilla + press', target: 'Full body', sets: 1, reps: '12 reps × 3 vueltas', rest: '20s', weight: '8kg c/u', note: 'Sin descanso prolongado.' },
+      { name: 'Cinta — bloque 2', target: 'Cardio', sets: 1, reps: '5 min', rest: '—', weight: 'Inclinación 12%, vel 5 km/h', note: 'Subiste un nivel.' },
+      { name: 'Circuito 2: remo + curl', target: 'Espalda + brazos', sets: 1, reps: '10 reps × 3 vueltas', rest: '20s', weight: '8-10kg c/u', note: 'Mantené el ritmo.' },
+      { name: 'Cinta — bloque 3', target: 'Cardio', sets: 1, reps: '5 min', rest: '—', weight: 'Inclinación 12%, vel 5 km/h', note: '—' },
+      { name: 'Circuito 3: peso muerto + plancha', target: 'Posterior + core', sets: 1, reps: 'PM 10 + plancha 30s × 3', rest: '20s', weight: '12kg c/u', note: 'Última carga.' },
+      { name: 'Vuelta a la calma', target: 'Recuperación', sets: 1, reps: '8 min', rest: '—', weight: 'Cinta plana 3.5 km/h', note: 'Estiramiento.' },
+    ]
+  },
+];
+
+// =========================================================================
+// STATE
+// =========================================================================
+const STORAGE_KEY = 'forja_workout_v2';
+let state = {
+  history: [],         // entrenamientos completados
+  planned: [],         // actividades agendadas
+  activeRoutine: null,
+  selectedRating: 3,
+  currentTab: 'hoy',
+  currentCat: 'all',
+  weekOffset: 0,       // 0 = esta semana, +1 = próxima, -1 = anterior
+  addType: 'rutina',
+  addRoutineId: null,
+  addEditingId: null,  // si estamos editando una activity existente
+};
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      state.history = parsed.history || [];
+      state.planned = parsed.planned || [];
+    }
+  } catch (e) { console.error('Load error', e); }
+}
+function saveState() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      history: state.history,
+      planned: state.planned,
+    }));
+  } catch (e) { console.error('Save error', e); }
+}
+
+// =========================================================================
+// HELPERS DE FECHA
+// =========================================================================
+function todayISO() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+function isoToDate(iso) {
+  const [y, m, d] = iso.split('-').map(Number);
+  return new Date(y, m-1, d);
+}
+function dateToISO(d) {
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+function getMondayOf(date) {
+  const d = new Date(date);
+  d.setHours(0,0,0,0);
+  const day = d.getDay() === 0 ? 6 : d.getDay() - 1;
+  d.setDate(d.getDate() - day);
+  return d;
+}
+function addDays(date, n) {
+  const d = new Date(date);
+  d.setDate(d.getDate() + n);
+  return d;
+}
+const DAY_NAMES = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+const DAY_NAMES_SHORT = ['DOM','LUN','MAR','MIÉ','JUE','VIE','SÁB'];
+const MONTHS_SHORT = ['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'];
+
+// =========================================================================
+// RECOMENDADOR INTELIGENTE
+// =========================================================================
+function getRecentActivity(daysBack = 3) {
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - daysBack);
+  cutoff.setHours(0,0,0,0);
+  const recent = [];
+  // Historial completado
+  state.history.forEach(s => {
+    const d = new Date(s.date);
+    if (d >= cutoff) {
+      const r = ROUTINES.find(x => x.id === s.routineId);
+      recent.push({
+        date: d, source: 'history', type: s.activityType || 'rutina',
+        groups: r ? r.muscleGroups : (s.muscleGroups || []),
+        name: r ? r.title : s.name,
+      });
+    }
+  });
+  // Plan completado
+  state.planned.forEach(p => {
+    if (!p.completed) return;
+    const d = isoToDate(p.date);
+    if (d >= cutoff) {
+      let groups = [];
+      if (p.type === 'rutina') {
+        const r = ROUTINES.find(x => x.id === p.routineId);
+        groups = r ? r.muscleGroups : [];
+      } else if (p.type === 'tenis') groups = ['superior','pierna','cardio'];
+      else if (p.type === 'caminata') groups = ['cardio'];
+      recent.push({ date: d, source: 'plan', type: p.type, groups, name: p.name });
+    }
+  });
+  return recent.sort((a,b) => b.date - a.date);
+}
+
+function getTomorrowPlanned() {
+  const tomorrow = addDays(new Date(), 1);
+  const iso = dateToISO(tomorrow);
+  return state.planned.filter(p => p.date === iso && !p.completed);
+}
+
+function generateRecommendation() {
+  const recent = getRecentActivity(2); // últimos 2 días
+  const tomorrow = getTomorrowPlanned();
+  const today = new Date();
+  const dayName = DAY_NAMES[today.getDay()];
+  const todayIso = todayISO();
+
+  // ¿Ya hay algo planificado hoy?
+  const todayPlanned = state.planned.filter(p => p.date === todayIso && !p.completed);
+
+  if (todayPlanned.length > 0) {
+    const items = todayPlanned.map(p => {
+      const r = p.type === 'rutina' ? ROUTINES.find(x => x.id === p.routineId) : null;
+      return {
+        title: r ? r.title : p.name,
+        meta: `${p.duration} min · ${p.type === 'rutina' ? (r?.calories || '') : 'agendado'}`,
+        action: p.type === 'rutina' ? () => openRoutine(p.routineId, p.id) : () => openTab('plan'),
+        primary: true,
+        icon: p.type === 'rutina' ? (r?.icon || 'dumbbell') : (p.type === 'tenis' ? 'tennis' : p.type === 'caminata' ? 'run' : 'flame'),
+      };
+    });
+    return {
+      day: dayName,
+      reason: `Ya tenés ${todayPlanned.length} ${todayPlanned.length === 1 ? 'actividad agendada' : 'actividades agendadas'} para hoy. ¡A darle!`,
+      options: items,
+    };
+  }
+
+  // Análisis de músculos trabajados recientemente
+  const recentGroups = new Set();
+  recent.forEach(r => r.groups.forEach(g => recentGroups.add(g)));
+
+  const lastActivity = recent[0]; // más reciente
+  let reason = '';
+  let avoidGroups = [];
+  let preferGroups = [];
+
+  if (!lastActivity) {
+    reason = 'No registré entrenamientos en los últimos días. Buen momento para arrancar suave.';
+    preferGroups = ['cardio', 'movilidad'];
+  } else {
+    const hoursSinceLast = (today - lastActivity.date) / (1000 * 60 * 60);
+    if (hoursSinceLast < 24) {
+      // Ayer
+      if (lastActivity.type === 'tenis' || lastActivity.groups.includes('pierna')) {
+        reason = `Ayer ${lastActivity.type === 'tenis' ? 'jugaste tenis' : 'trabajaste piernas'} — hoy mejor enfocate en tren superior o cardio bajo impacto, dale descanso a las piernas.`;
+        avoidGroups = ['pierna'];
+        preferGroups = ['superior', 'movilidad', 'cardio'];
+      } else if (lastActivity.groups.includes('superior')) {
+        reason = `Ayer trabajaste tren superior — hoy podés ir con piernas, cardio o tenis.`;
+        avoidGroups = ['superior'];
+        preferGroups = ['pierna', 'cardio'];
+      } else {
+        reason = `Ayer hiciste ${lastActivity.name}. Hoy buen día para variar la zona trabajada.`;
+        preferGroups = ['superior', 'pierna'];
+      }
+    } else {
+      reason = `Tu última sesión fue ${lastActivity.name}. Tenés todo descansado, día completo de opciones.`;
+      preferGroups = ['superior', 'pierna', 'cardio'];
+    }
+  }
+
+  // ¿Mañana hay tenis?
+  const tomorrowHasTenis = tomorrow.some(p => p.type === 'tenis');
+  if (tomorrowHasTenis) {
+    reason += ' Mañana tenés tenis, así que hoy evitá pierna intensa.';
+    avoidGroups.push('pierna');
+  }
+
+  // Generar 2-3 opciones
+  const candidates = ROUTINES.filter(r => {
+    const groups = r.muscleGroups || [];
+    const conflicts = groups.some(g => avoidGroups.includes(g));
+    return !conflicts;
+  });
+
+  // Score: rutinas que tocan muscleGroups preferidos puntúan más
+  const scored = candidates.map(r => {
+    let score = 0;
+    (r.muscleGroups || []).forEach(g => {
+      if (preferGroups.includes(g)) score += 10;
+    });
+    if (r.level === 2) score += 2; // medio preferido
+    if (r.level === 1 && recent.length > 2) score += 3; // si hubo mucho movimiento, recuperación
+    return { r, score };
+  }).sort((a,b) => b.score - a.score);
+
+  const top = scored.slice(0, 3).map((s, i) => ({
+    title: s.r.title,
+    meta: `${s.r.duration} min · ${s.r.calories} · ${['','Inicial','Medio','Avanzado'][s.r.level]}`,
+    action: () => openRoutine(s.r.id),
+    primary: i === 0,
+    icon: s.r.icon,
+  }));
+
+  return { day: dayName, reason, options: top };
+}
+
+function renderRecommendation() {
+  const box = document.getElementById('recommendation-box');
+  const rec = generateRecommendation();
+  box.innerHTML = `
+    <div class="rec-header">
+      <span class="rec-badge">Recomendación</span>
+      <span class="rec-day">${rec.day}</span>
+    </div>
+    <div class="rec-reason">${rec.reason}</div>
+    <div class="rec-options">
+      ${rec.options.map((o, i) => `
+        <button class="rec-option ${o.primary ? 'primary' : ''}" data-idx="${i}">
+          <div class="rec-option-icon">${ICONS[o.icon] || ICONS.dumbbell}</div>
+          <div class="rec-option-info">
+            <div class="rec-option-title">${o.title}</div>
+            <div class="rec-option-meta">${o.meta}</div>
+          </div>
+          <div class="rec-option-arrow">${ICONS.arrow}</div>
+        </button>
+      `).join('')}
+    </div>
+  `;
+  box.querySelectorAll('.rec-option').forEach((el, i) => {
+    el.addEventListener('click', () => rec.options[i].action());
+  });
+}
+
+// =========================================================================
+// PLANIFICADOR
+// =========================================================================
+function renderPlan() {
+  const monday = addDays(getMondayOf(new Date()), state.weekOffset * 7);
+  const sunday = addDays(monday, 6);
+
+  // Header semana
+  const label = state.weekOffset === 0 ? 'Esta semana' : state.weekOffset === 1 ? 'Próxima semana' : state.weekOffset === -1 ? 'Semana anterior' : `${Math.abs(state.weekOffset)} ${state.weekOffset > 0 ? 'sem. adelante' : 'sem. atrás'}`;
+  document.getElementById('week-label').textContent = label;
+  document.getElementById('week-range').textContent = `${monday.getDate()} ${MONTHS_SHORT[monday.getMonth()]} — ${sunday.getDate()} ${MONTHS_SHORT[sunday.getMonth()]}`;
+
+  // Días
+  const container = document.getElementById('week-days');
+  const todayStr = todayISO();
+  let html = '';
+  for (let i = 0; i < 7; i++) {
+    const date = addDays(monday, i);
+    const iso = dateToISO(date);
+    const isToday = iso === todayStr;
+    const isPast = iso < todayStr;
+    const dayActivities = state.planned.filter(p => p.date === iso).sort((a,b) => (a.createdAt || 0) - (b.createdAt || 0));
+
+    html += `
+      <div class="day-card ${isToday ? 'today' : ''} ${isPast && !isToday ? 'past' : ''}">
+        <div class="day-card-head">
+          <div class="day-card-info">
+            <div class="day-num">
+              <div class="day-num-d">${date.getDate()}</div>
+              <div class="day-num-m">${MONTHS_SHORT[date.getMonth()]}</div>
+            </div>
+            <div>
+              <div class="day-name">${DAY_NAMES[date.getDay()]}</div>
+              <div class="day-name-sub">${isToday ? 'Hoy' : isPast ? 'Pasado' : ''}</div>
+            </div>
+          </div>
+          <button class="day-add" data-add-date="${iso}" title="Agregar">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+        </div>
+        <div class="day-activities">
+          ${dayActivities.length === 0 ? '<div class="day-empty">Sin actividades</div>' : dayActivities.map(p => renderActivity(p)).join('')}
+        </div>
+      </div>
+    `;
+  }
+  container.innerHTML = html;
+
+  // Wire up listeners
+  container.querySelectorAll('[data-add-date]').forEach(btn => {
+    btn.addEventListener('click', () => openAddModal(btn.dataset.addDate));
+  });
+  container.querySelectorAll('.activity-check').forEach(el => {
+    el.addEventListener('click', e => {
+      e.stopPropagation();
+      toggleComplete(el.dataset.id);
+    });
+  });
+  container.querySelectorAll('[data-edit]').forEach(el => {
+    el.addEventListener('click', e => {
+      e.stopPropagation();
+      openEditModal(el.dataset.edit);
+    });
+  });
+  container.querySelectorAll('[data-del]').forEach(el => {
+    el.addEventListener('click', e => {
+      e.stopPropagation();
+      if (confirm('¿Borrar esta actividad?')) {
+        state.planned = state.planned.filter(p => p.id !== el.dataset.del);
+        saveState();
+        renderPlan();
+        renderRecommendation();
+      }
+    });
+  });
+}
+
+function renderActivity(p) {
+  let icon, title, meta;
+  if (p.type === 'rutina') {
+    const r = ROUTINES.find(x => x.id === p.routineId);
+    icon = r ? r.icon : 'dumbbell';
+    title = r ? r.title : 'Rutina';
+    meta = `${p.duration} min`;
+  } else {
+    icon = p.type === 'tenis' ? 'tennis' : p.type === 'caminata' ? 'run' : 'flame';
+    title = p.name || (p.type === 'tenis' ? 'Tenis' : p.type === 'caminata' ? 'Caminata' : 'Actividad');
+    meta = `${p.duration} min · ${p.type}`;
+  }
+  return `
+    <div class="activity ${p.completed ? 'completed' : ''}">
+      <div class="activity-check ${p.completed ? 'checked' : ''}" data-id="${p.id}">${p.completed ? ICONS.check : ''}</div>
+      <div class="activity-info">
+        <div class="activity-name">${title}</div>
+        <div class="activity-meta">${meta}</div>
+      </div>
+      <div class="activity-actions">
+        <button class="activity-btn" data-edit="${p.id}">${ICONS.edit}</button>
+        <button class="activity-btn del" data-del="${p.id}">${ICONS.trash}</button>
+      </div>
+    </div>
+  `;
+}
+
+function toggleComplete(id) {
+  const p = state.planned.find(x => x.id === id);
+  if (!p) return;
+  p.completed = !p.completed;
+  if (p.completed) {
+    // Sumar al historial
+    const sess = {
+      id: 'sess_' + Date.now(),
+      routineId: p.routineId || null,
+      date: isoToDate(p.date).toISOString(),
+      duration: p.duration,
+      rating: 3,
+      notes: 'Marcado desde plan',
+      activityType: p.type,
+      name: p.name,
+      muscleGroups: p.type === 'tenis' ? ['superior','pierna','cardio'] : p.type === 'caminata' ? ['cardio'] : [],
+    };
+    state.history.push(sess);
+    showToast('✓ Completado y registrado');
+  } else {
+    // Quitar del historial el último relacionado
+    const idx = state.history.findIndex(s => s.notes === 'Marcado desde plan' && s.duration === p.duration);
+    if (idx >= 0) state.history.splice(idx, 1);
+  }
+  saveState();
+  renderPlan();
+  updateStats();
+  renderRecommendation();
+}
+
+// =========================================================================
+// MODAL AGREGAR
+// =========================================================================
+function openAddModal(dateISO, editingId = null) {
+  state.addEditingId = editingId;
+  state.addType = 'rutina';
+  state.addRoutineId = null;
+  document.getElementById('add-date').value = dateISO || todayISO();
+  document.getElementById('add-duration').value = 60;
+  document.getElementById('custom-name').value = '';
+
+  // Si estamos editando
+  if (editingId) {
+    const p = state.planned.find(x => x.id === editingId);
+    if (p) {
+      state.addType = p.type;
+      state.addRoutineId = p.routineId || null;
+      document.getElementById('add-date').value = p.date;
+      document.getElementById('add-duration').value = p.duration;
+      document.getElementById('custom-name').value = p.name || '';
+      document.getElementById('add-modal-title').textContent = 'Editar actividad';
+    }
+  } else {
+    document.getElementById('add-modal-title').textContent = 'Agregar al plan';
+  }
+
+  // Reset visual de tipos
+  document.querySelectorAll('.activity-type-btn').forEach(b => {
+    b.classList.toggle('selected', b.dataset.type === state.addType);
+  });
+  updateAddTypeUI();
+  renderRoutinePicker();
+
+  document.getElementById('add-modal').classList.add('show');
+}
+
+function updateAddTypeUI() {
+  const isRutina = state.addType === 'rutina';
+  document.getElementById('routine-picker-block').style.display = isRutina ? 'block' : 'none';
+  document.getElementById('custom-name-block').style.display = isRutina ? 'none' : 'block';
+
+  // Sugerir duración por defecto
+  if (!state.addEditingId) {
+    if (state.addType === 'tenis') document.getElementById('add-duration').value = 60;
+    else if (state.addType === 'caminata') document.getElementById('add-duration').value = 30;
+    else if (state.addType === 'otro') document.getElementById('add-duration').value = 45;
+  }
+
+  // Placeholder
+  const customInput = document.getElementById('custom-name');
+  if (state.addType === 'tenis') customInput.placeholder = 'ej: Tenis con Pablo';
+  else if (state.addType === 'caminata') customInput.placeholder = 'ej: Caminata por la costanera';
+  else customInput.placeholder = 'ej: Yoga, natación, fútbol...';
+}
+
+function renderRoutinePicker() {
+  const cont = document.getElementById('routine-picker');
+  cont.innerHTML = ROUTINES.map(r => `
+    <button class="routine-pick-item ${state.addRoutineId === r.id ? 'selected' : ''}" data-rid="${r.id}">
+      <div class="routine-pick-icon">${ICONS[r.icon]}</div>
+      <div class="routine-pick-info">
+        <div class="routine-pick-name">${r.title}</div>
+        <div class="routine-pick-meta">${r.duration} min · ${['','Inicial','Medio','Avanzado'][r.level]}</div>
+      </div>
+    </button>
+  `).join('');
+  cont.querySelectorAll('.routine-pick-item').forEach(el => {
+    el.addEventListener('click', () => {
+      state.addRoutineId = el.dataset.rid;
+      const r = ROUTINES.find(x => x.id === state.addRoutineId);
+      if (r) document.getElementById('add-duration').value = r.duration;
+      renderRoutinePicker();
+    });
+  });
+}
+
+function saveAddActivity() {
+  const date = document.getElementById('add-date').value;
+  const duration = parseInt(document.getElementById('add-duration').value) || 60;
+  if (!date) { showToast('Elegí un día'); return; }
+
+  let activity;
+  if (state.addType === 'rutina') {
+    if (!state.addRoutineId) { showToast('Elegí una rutina'); return; }
+    activity = {
+      id: state.addEditingId || 'plan_' + Date.now(),
+      type: 'rutina',
+      routineId: state.addRoutineId,
+      date, duration,
+      completed: false,
+      createdAt: Date.now(),
+    };
+  } else {
+    const name = document.getElementById('custom-name').value.trim() ||
+      (state.addType === 'tenis' ? 'Tenis' : state.addType === 'caminata' ? 'Caminata' : 'Actividad');
+    activity = {
+      id: state.addEditingId || 'plan_' + Date.now(),
+      type: state.addType,
+      name, date, duration,
+      completed: false,
+      createdAt: Date.now(),
+    };
+  }
+
+  if (state.addEditingId) {
+    const idx = state.planned.findIndex(p => p.id === state.addEditingId);
+    if (idx >= 0) {
+      activity.completed = state.planned[idx].completed;
+      state.planned[idx] = activity;
+    }
+    showToast('✓ Actividad actualizada');
+  } else {
+    state.planned.push(activity);
+    showToast('✓ Agregado al plan');
+  }
+
+  saveState();
+  document.getElementById('add-modal').classList.remove('show');
+  renderPlan();
+  renderRecommendation();
+}
+
+function openEditModal(id) { openAddModal(null, id); }
+
+// =========================================================================
+// CATEGORÍAS Y RUTINAS
+// =========================================================================
+function renderCategories() {
+  const grid = document.getElementById('cat-grid');
+  grid.innerHTML = CATEGORIES.map(c => {
+    const count = c.id === 'all' ? ROUTINES.length : ROUTINES.filter(r => r.cat === c.id).length;
+    return `
+      <button class="cat-card ${state.currentCat === c.id ? 'active' : ''}" data-cat="${c.id}">
+        <div class="cat-icon">${ICONS[c.icon]}</div>
+        <div class="cat-name">${c.name}</div>
+        <div class="cat-count">${count} ${count === 1 ? 'rutina' : 'rutinas'}</div>
+      </button>
+    `;
+  }).join('');
+  grid.querySelectorAll('.cat-card').forEach(btn => {
+    btn.addEventListener('click', () => {
+      state.currentCat = btn.dataset.cat;
+      renderCategories();
+      renderRoutines();
+    });
+  });
+}
+
+function renderRoutines() {
+  const list = document.getElementById('routine-list');
+  const filtered = state.currentCat === 'all' ? ROUTINES : ROUTINES.filter(r => r.cat === state.currentCat);
+  const section = CATEGORIES.find(c => c.id === state.currentCat);
+  document.getElementById('section-name').textContent = state.currentCat === 'all' ? 'Todas las rutinas' : section.name;
+
+  list.innerHTML = filtered.map(r => `
+    <div class="routine-card" data-id="${r.id}">
+      <div class="routine-head">
+        <div class="routine-icon">${ICONS[r.icon]}</div>
+        <div class="routine-meta">
+          <div class="routine-title">${r.title}</div>
+          <div class="routine-desc">${r.desc}</div>
+          <div class="routine-tags">
+            <span class="tag level-${r.level}">${['', 'Inicial', 'Medio', 'Avanzado'][r.level]}</span>
+            <span class="tag">⏱ ${r.duration} min</span>
+            <span class="tag">${r.calories}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+  list.querySelectorAll('.routine-card').forEach(card => {
+    card.addEventListener('click', () => openRoutine(card.dataset.id));
+  });
+}
+
+let activePlannedId = null; // si abrimos desde recomendación de plan
+
+function openRoutine(id, plannedId = null) {
+  const r = ROUTINES.find(x => x.id === id);
+  if (!r) return;
+  state.activeRoutine = r;
+  activePlannedId = plannedId;
+  document.getElementById('modal-title-bar').textContent = r.title;
+  const body = document.getElementById('modal-body');
+  body.innerHTML = `
+    <div class="routine-banner">
+      <div class="routine-banner-icon">${ICONS[r.icon]}</div>
+      <h2>${r.title}</h2>
+      <div class="routine-banner-desc">${r.desc}</div>
+      <div class="routine-info-grid">
+        <div class="info-cell">
+          <div class="info-cell-num">${r.duration}'</div>
+          <div class="info-cell-lbl">Duración</div>
+        </div>
+        <div class="info-cell">
+          <div class="info-cell-num">${r.exercises.length}</div>
+          <div class="info-cell-lbl">Ejercicios</div>
+        </div>
+        <div class="info-cell">
+          <div class="info-cell-num">${r.calories.replace('~','').replace(' kcal','')}</div>
+          <div class="info-cell-lbl">kcal aprox.</div>
+        </div>
+      </div>
+    </div>
+    ${r.notes ? `<div class="exercise-note" style="margin-bottom:14px;"><strong>📌 Antes de arrancar:</strong> ${r.notes}</div>` : ''}
+    <h3 style="font-size:1.4rem; margin-bottom:14px; color:var(--text);">Ejercicios</h3>
+    <div class="exercise-list">
+      ${r.exercises.map((ex, i) => `
+        <div class="exercise-card">
+          <div class="exercise-num">${i + 1}</div>
+          <div class="exercise-content">
+            <div class="exercise-target">${ex.target}</div>
+            <div class="exercise-name">${ex.name}</div>
+            <div class="exercise-detail">
+              ${ex.sets > 0 ? `<span><strong>${ex.sets}</strong> series</span>` : ''}
+              <span><strong>${ex.reps}</strong></span>
+              ${ex.rest !== '—' ? `<span>desc. <strong>${ex.rest}</strong></span>` : ''}
+              ${ex.weight !== '—' ? `<span><strong>${ex.weight}</strong></span>` : ''}
+            </div>
+            ${ex.note ? `<div class="exercise-note">${ex.note}</div>` : ''}
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+  document.getElementById('modal-overlay').classList.add('show');
+  document.getElementById('modal').classList.add('show');
+  document.getElementById('complete-bar').classList.add('show');
+}
+
+function closeRoutine() {
+  document.getElementById('modal-overlay').classList.remove('show');
+  document.getElementById('modal').classList.remove('show');
+  document.getElementById('complete-bar').classList.remove('show');
+  state.activeRoutine = null;
+  activePlannedId = null;
+}
+
+// =========================================================================
+// HISTORIAL
+// =========================================================================
+function renderHistory() {
+  const list = document.getElementById('history-list');
+  if (state.history.length === 0) {
+    list.innerHTML = `
+      <div class="history-empty">
+        ${ICONS.history}
+        <h3>Aún sin entrenamientos</h3>
+        <p>Cuando completes una rutina o marqués una actividad,<br>va a aparecer acá.</p>
+      </div>
+    `;
+    return;
+  }
+  const sorted = [...state.history].sort((a,b) => new Date(b.date) - new Date(a.date));
+  const ratings = ['','😩','😕','😐','😊','🔥'];
+  list.innerHTML = sorted.map(s => {
+    const d = new Date(s.date);
+    const routine = s.routineId ? ROUTINES.find(r => r.id === s.routineId) : null;
+    const title = routine ? routine.title : (s.name || s.activityType || 'Actividad');
+    return `
+      <div class="history-item" data-id="${s.id}">
+        <div class="history-date">
+          <div class="history-day">${d.getDate()}</div>
+          <div class="history-month">${MONTHS_SHORT[d.getMonth()]}</div>
+        </div>
+        <div class="history-info">
+          <div class="history-routine">${title}</div>
+          <div class="history-meta">${s.duration} min · ${ratings[s.rating]}</div>
+          ${s.notes && s.notes !== 'Marcado desde plan' ? `<div class="history-meta" style="margin-top:4px; color:var(--text-muted);">${s.notes}</div>` : ''}
+        </div>
+        <button class="history-del" data-del="${s.id}">Borrar</button>
+      </div>
+    `;
+  }).join('');
+  list.querySelectorAll('[data-del]').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      if (confirm('¿Borrar este registro?')) {
+        state.history = state.history.filter(s => s.id !== btn.dataset.del);
+        saveState();
+        renderHistory();
+        updateStats();
+        renderRecommendation();
+      }
+    });
+  });
+}
+
+// =========================================================================
+// STATS Y STREAK
+// =========================================================================
+function updateStats() {
+  document.getElementById('total-sessions').textContent = state.history.length;
+  const totalMin = state.history.reduce((sum, s) => sum + (s.duration || 0), 0);
+  document.getElementById('total-min').textContent = totalMin;
+
+  const monday = getMondayOf(new Date());
+  const weekCount = state.history.filter(s => new Date(s.date) >= monday).length;
+  document.getElementById('week-sessions').textContent = weekCount;
+
+  const streak = calcStreak();
+  document.getElementById('streak-num').textContent = streak;
+
+  // Today label
+  const today = new Date();
+  document.getElementById('today-label').textContent = `${DAY_NAMES[today.getDay()].toUpperCase()} · ${today.getDate()} ${MONTHS_SHORT[today.getMonth()]}`;
+}
+
+function calcStreak() {
+  if (state.history.length === 0) return 0;
+  const dates = [...new Set(state.history.map(s => new Date(s.date).toDateString()))];
+  dates.sort((a,b) => new Date(b) - new Date(a));
+  let streak = 0;
+  let cursor = new Date();
+  cursor.setHours(0,0,0,0);
+  if (!dates.includes(cursor.toDateString())) {
+    cursor.setDate(cursor.getDate() - 1);
+  }
+  for (const dStr of dates) {
+    if (dStr === cursor.toDateString()) {
+      streak++;
+      cursor.setDate(cursor.getDate() - 1);
+    } else break;
+  }
+  return streak;
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// =========================================================================
+// CALCULADORA
+// =========================================================================
+function calcCalories() {
+  const peso = parseFloat(document.getElementById('calc-peso').value);
+  const altura = parseFloat(document.getElementById('calc-altura').value);
+  const edad = parseInt(document.getElementById('calc-edad').value);
+  const act = parseFloat(document.getElementById('calc-act').value);
+
+  if (!peso || !altura || !edad) {
+    showToast('Completá peso, altura y edad');
+    return;
+  }
+
+  // Mifflin-St Jeor (varón). Se podría parametrizar género en futuro.
+  const bmr = (10 * peso) + (6.25 * altura) - (5 * edad) + 5;
+  const tdee = Math.round(bmr * act);
+  const deficit = tdee - 400;
+  const proteina = Math.round(peso * 1.8);
+  const result = document.getElementById('calc-result');
+  result.style.display = 'block';
+  result.innerHTML = `
+    <div class="calc-result">
+      <h4>Tus números</h4>
+      <div class="calc-grid">
+        <div class="calc-cell">
+          <div class="calc-cell-num">${tdee}</div>
+          <div class="calc-cell-lbl">Mantenimiento (kcal)</div>
+        </div>
+        <div class="calc-cell">
+          <div class="calc-cell-num">${deficit}</div>
+          <div class="calc-cell-lbl">Para bajar grasa</div>
+        </div>
+        <div class="calc-cell">
+          <div class="calc-cell-num">${proteina}g</div>
+          <div class="calc-cell-lbl">Proteína/día</div>
+        </div>
+        <div class="calc-cell">
+          <div class="calc-cell-num">${Math.round(deficit * 7 / 7700 * 1000) / 1000}kg</div>
+          <div class="calc-cell-lbl">Bajada esperada/sem</div>
+        </div>
+      </div>
+      <div class="calc-explainer">
+        Ese déficit de 400 kcal/día es <strong>moderado y sostenible</strong>. Si bajás más rápido perdés músculo. Si tu balanza no se mueve en 2 semanas, restá 100 kcal más. Mantené la proteína alta sí o sí.
+      </div>
+    </div>
+  `;
+}
+
+// =========================================================================
+// EXPORT/IMPORT
+// =========================================================================
+function exportData() {
+  const data = JSON.stringify({ history: state.history, planned: state.planned }, null, 2);
+  navigator.clipboard.writeText(data).then(() => {
+    showToast('✓ Datos copiados al portapapeles');
+  }).catch(() => {
+    prompt('Copiá este JSON y guardalo:', data);
+  });
+}
+
+function importData() {
+  const txt = prompt('Pegá el JSON que exportaste:');
+  if (!txt) return;
+  try {
+    const parsed = JSON.parse(txt);
+    if (parsed.history) state.history = parsed.history;
+    if (parsed.planned) state.planned = parsed.planned;
+    saveState();
+    updateStats();
+    renderRecommendation();
+    if (state.currentTab === 'plan') renderPlan();
+    if (state.currentTab === 'historial') renderHistory();
+    showToast('✓ Datos importados');
+  } catch (e) {
+    showToast('Error: JSON inválido');
+  }
+}
+
+// =========================================================================
+// NAVEGACIÓN
+// =========================================================================
+function openTab(name) {
+  state.currentTab = name;
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+  ['hoy','plan','rutinas','historial','mas'].forEach(t => {
+    document.getElementById('tab-' + t).style.display = t === name ? 'block' : 'none';
+  });
+  if (name === 'hoy') { renderRecommendation(); updateStats(); }
+  if (name === 'plan') renderPlan();
+  if (name === 'historial') renderHistory();
+  window.scrollTo(0, 0);
+}
+
+// =========================================================================
+// EVENTS
+// =========================================================================
+document.querySelectorAll('.nav-btn').forEach(btn => {
+  btn.addEventListener('click', () => openTab(btn.dataset.tab));
+});
+
+document.getElementById('prev-week').addEventListener('click', () => {
+  state.weekOffset--;
+  renderPlan();
+});
+document.getElementById('next-week').addEventListener('click', () => {
+  state.weekOffset++;
+  renderPlan();
+});
+
+document.getElementById('modal-close').addEventListener('click', closeRoutine);
+document.getElementById('modal-overlay').addEventListener('click', closeRoutine);
+
+document.getElementById('schedule-btn').addEventListener('click', () => {
+  if (!state.activeRoutine) return;
+  closeRoutine();
+  setTimeout(() => {
+    state.addType = 'rutina';
+    state.addRoutineId = state.activeRoutine ? state.activeRoutine.id : null;
+    openAddModal(todayISO());
+    state.addRoutineId = state.activeRoutine?.id;
+  }, 100);
+});
+
+document.getElementById('complete-btn').addEventListener('click', () => {
+  document.getElementById('complete-modal').classList.add('show');
+});
+
+document.querySelectorAll('.rating-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.rating-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    state.selectedRating = parseInt(btn.dataset.r);
+  });
+});
+
+document.getElementById('cancel-complete').addEventListener('click', () => {
+  document.getElementById('complete-modal').classList.remove('show');
+});
+
+document.getElementById('save-session').addEventListener('click', () => {
+  if (!state.activeRoutine) return;
+  const session = {
+    id: 'sess_' + Date.now(),
+    routineId: state.activeRoutine.id,
+    date: new Date().toISOString(),
+    duration: state.activeRoutine.duration,
+    rating: state.selectedRating,
+    notes: document.getElementById('session-notes').value.trim(),
+    activityType: 'rutina',
+    muscleGroups: state.activeRoutine.muscleGroups,
+  };
+  state.history.push(session);
+
+  // Si vino de un plan, marcarlo completado
+  if (activePlannedId) {
+    const p = state.planned.find(x => x.id === activePlannedId);
+    if (p) p.completed = true;
+  }
+
+  saveState();
+  document.getElementById('session-notes').value = '';
+  state.selectedRating = 3;
+  document.querySelectorAll('.rating-btn').forEach(b => b.classList.remove('selected'));
+  document.querySelector('.rating-btn[data-r="3"]').classList.add('selected');
+  document.getElementById('complete-modal').classList.remove('show');
+  closeRoutine();
+  updateStats();
+  renderRecommendation();
+  showToast('✓ Entrenamiento registrado');
+});
+
+// Add modal
+document.querySelectorAll('.activity-type-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.activity-type-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    state.addType = btn.dataset.type;
+    updateAddTypeUI();
+  });
+});
+document.getElementById('add-cancel').addEventListener('click', () => {
+  document.getElementById('add-modal').classList.remove('show');
+});
+document.getElementById('add-save').addEventListener('click', saveAddActivity);
+
+// Calculadora
+document.getElementById('calc-btn').addEventListener('click', calcCalories);
+document.getElementById('export-btn').addEventListener('click', exportData);
+document.getElementById('import-btn').addEventListener('click', importData);
+
+// =========================================================================
+// INIT
+// =========================================================================
+loadState();
+renderCategories();
+renderRoutines();
+updateStats();
+renderRecommendation();
+</script>
+</body>
+</html>
