@@ -479,11 +479,9 @@
   <div class="modal-head">
     <button class="back-btn" id="day-close"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg></button>
     <div class="modal-title" id="day-title-bar"></div>
+    <button class="day-add" id="day-add-ex-btn" style="width:auto; padding:0 14px; border-radius:10px; font-size:0.8rem; font-weight:700; font-family:'Archivo',sans-serif; white-space:nowrap;">+ Agregar</button>
   </div>
   <div class="modal-body" id="day-body"></div>
-</div>
-<div class="complete-bar" id="day-bar">
-  <button class="complete-btn" id="day-add-ex-btn">+ Agregar ejercicio</button>
 </div>
 
 <!-- SHEET: PICKER DE EJERCICIO -->
@@ -876,11 +874,9 @@ function openDay(key){
   document.getElementById('day-title-bar').textContent = `${DAY_NAMES[date.getDay()]} ${date.getDate()} ${MONTHS_SHORT[date.getMonth()]}`;
   renderDayBody();
   document.getElementById('day-modal').classList.add('show');
-  document.getElementById('day-bar').classList.add('show');
 }
 function closeDay(){
   document.getElementById('day-modal').classList.remove('show');
-  document.getElementById('day-bar').classList.remove('show');
   state.dayKey=null;
 }
 function renderDayBody(){
