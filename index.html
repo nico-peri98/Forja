@@ -749,7 +749,7 @@ function openLogForm(ex, editId=null){
       <div class="frow3">
         <div class="fblock"><div class="flabel">Series</div><input class="finput" type="number" id="ff-sets" inputmode="numeric" value="${existing?.sets||(ex.sets||3)}"></div>
         <div class="fblock"><div class="flabel">Reps</div><input class="finput" type="text" id="ff-reps" placeholder="10" value="${existing?.reps||(ex.reps||'')}"></div>
-        <div class="fblock"><div class="flabel">Peso</div><input class="finput" type="text" id="ff-weight" placeholder="20kg" value="${existing?.weight||''}"></div>
+        <div class="fblock"><div class="flabel">Peso</div><input class="finput" type="text" id="ff-weight" placeholder="20kg" value="${existing?.weight||(ex.weight||'')}"></div>
       </div>
       <div class="frow2">
         <div class="fblock"><div class="flabel">RPE</div><select class="finput" id="ff-rpe"><option value="">-</option><option value="6">6 Fácil</option><option value="7">7 Moderado</option><option value="8" ${existing?.rpe==='8'?'selected':''}>8 Fuerte</option><option value="9">9 Muy fuerte</option><option value="10">10 Máximo</option></select></div>
@@ -758,8 +758,8 @@ function openLogForm(ex, editId=null){
   } else {
     $('sf-fields').innerHTML=`
       <div class="frow3">
-        <div class="fblock"><div class="flabel">Duración (min)</div><input class="finput" type="number" id="ff-dur" inputmode="numeric" value="${existing?.duration||30}"></div>
-        <div class="fblock"><div class="flabel">Distancia (km)</div><input class="finput" type="text" id="ff-dist" placeholder="opc." value="${existing?.distance||''}"></div>
+        <div class="fblock"><div class="flabel">Duración (min)</div><input class="finput" type="number" id="ff-dur" inputmode="numeric" value="${existing?.duration||(ex.duration||30)}"></div>
+        <div class="fblock"><div class="flabel">Distancia (km)</div><input class="finput" type="text" id="ff-dist" placeholder="opc." value="${existing?.distance||(ex.distance||'')}"></div>
         <div class="fblock"><div class="flabel">Intensidad</div><select class="finput" id="ff-int"><option value="">-</option><option value="Ligera">Ligera</option><option value="Moderada">Moderada</option><option value="Vigorosa">Vigorosa</option></select></div>
       </div>
       <div class="fblock"><div class="flabel">Observaciones</div><input class="finput" type="text" id="ff-obs" placeholder="Notas" value="${existing?.obs||''}"></div>`;
@@ -877,11 +877,24 @@ function renderReBody(){
         <button class="iBtn danger" data-del-day="${di}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg></button>
       </div>`;
     day.exercises.forEach((ex,ei)=>{
-      html+=`<div style="display:flex;align-items:center;gap:6px;padding:6px 0;border-bottom:1px solid var(--b)">
-        <div style="flex:1;min-width:0"><div style="font-size:.83rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${ex.name}</div><div style="font-size:.66rem;color:var(--td);font-family:'JetBrains Mono',monospace">${ex.sets||3}×${ex.reps||''}</div></div>
-        <button class="iBtn" data-ex-up="${di}-${ei}" title="Subir">↑</button>
-        <button class="iBtn" data-ex-dn="${di}-${ei}" title="Bajar">↓</button>
-        <button class="iBtn danger" data-ex-del="${di}-${ei}">×</button>
+      const isF = ex.type==='fuerza';
+      html+=`<div style="background:var(--bg2);border:1px solid var(--b);border-radius:8px;padding:10px;margin-bottom:6px">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px">
+          <div style="flex:1;min-width:0;font-size:.83rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${ex.name}</div>
+          <button class="iBtn" data-ex-up="${di}-${ei}" title="Subir">↑</button>
+          <button class="iBtn" data-ex-dn="${di}-${ei}" title="Bajar">↓</button>
+          <button class="iBtn danger" data-ex-del="${di}-${ei}">×</button>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px">
+          ${isF
+            ? `<div><div style="font-size:.58rem;color:var(--tm);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:3px">Series</div><input class="finput" type="number" inputmode="numeric" data-ex-sets="${di}-${ei}" value="${ex.sets||''}" placeholder="3" style="padding:8px 10px;font-size:.85rem"></div>
+               <div><div style="font-size:.58rem;color:var(--tm);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:3px">Reps</div><input class="finput" type="text" data-ex-reps="${di}-${ei}" value="${ex.reps||''}" placeholder="10" style="padding:8px 10px;font-size:.85rem"></div>
+               <div><div style="font-size:.58rem;color:var(--tm);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:3px">Peso</div><input class="finput" type="text" data-ex-weight="${di}-${ei}" value="${ex.weight||''}" placeholder="20kg" style="padding:8px 10px;font-size:.85rem"></div>`
+            : `<div><div style="font-size:.58rem;color:var(--tm);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:3px">Duración</div><input class="finput" type="number" inputmode="numeric" data-ex-dur="${di}-${ei}" value="${ex.duration||''}" placeholder="30" style="padding:8px 10px;font-size:.85rem"></div>
+               <div><div style="font-size:.58rem;color:var(--tm);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:3px">Distancia</div><input class="finput" type="text" data-ex-dist="${di}-${ei}" value="${ex.distance||''}" placeholder="5km" style="padding:8px 10px;font-size:.85rem"></div>
+               <div></div>`
+          }
+        </div>
       </div>`;
     });
     html+=`<button class="btn btn-s" style="width:100%;margin-top:8px;font-size:.78rem" data-add-ex="${di}">+ Agregar ejercicio</button></div>`;
@@ -895,7 +908,13 @@ function renderReBody(){
   $('re-body').querySelectorAll('[data-del-day]').forEach(b=>b.addEventListener('click',()=>{ reState.days.splice(parseInt(b.dataset.delDay),1); renderReBody(); }));
   $('re-body').querySelectorAll('[data-add-ex]').forEach(b=>b.addEventListener('click',()=>{
     const di=parseInt(b.dataset.addEx);
-    openPicker(ex=>{ reState.days[di].exercises.push({exId:ex.id,name:ex.name,sets:3,reps:'10',type:ex.type,met:ex.met,equipo:ex.equipo}); renderReBody(); });
+    openPicker(ex=>{
+      const isF = ex.type==='fuerza';
+      reState.days[di].exercises.push(isF
+        ? {exId:ex.id,name:ex.name,type:'fuerza',met:ex.met,cat:ex.cat,equipo:ex.equipo,sets:3,reps:'10',weight:''}
+        : {exId:ex.id,name:ex.name,type:'cardio',met:ex.met,cat:ex.cat,equipo:ex.equipo,duration:30,distance:''});
+      renderReBody();
+    });
   }));
   $('re-body').querySelectorAll('[data-ex-up]').forEach(b=>b.addEventListener('click',()=>{
     const [di,ei]=b.dataset.exUp.split('-').map(Number);
@@ -910,6 +929,27 @@ function renderReBody(){
     const [di,ei]=b.dataset.exDel.split('-').map(Number);
     reState.days[di].exercises.splice(ei,1); renderReBody();
   }));
+  // Inputs editables (NO re-renderizar, solo guardar en estado)
+  $('re-body').querySelectorAll('[data-ex-sets]').forEach(inp=>inp.addEventListener('input',()=>{
+    const [di,ei]=inp.dataset.exSets.split('-').map(Number);
+    reState.days[di].exercises[ei].sets = parseInt(inp.value)||0;
+  }));
+  $('re-body').querySelectorAll('[data-ex-reps]').forEach(inp=>inp.addEventListener('input',()=>{
+    const [di,ei]=inp.dataset.exReps.split('-').map(Number);
+    reState.days[di].exercises[ei].reps = inp.value;
+  }));
+  $('re-body').querySelectorAll('[data-ex-weight]').forEach(inp=>inp.addEventListener('input',()=>{
+    const [di,ei]=inp.dataset.exWeight.split('-').map(Number);
+    reState.days[di].exercises[ei].weight = inp.value;
+  }));
+  $('re-body').querySelectorAll('[data-ex-dur]').forEach(inp=>inp.addEventListener('input',()=>{
+    const [di,ei]=inp.dataset.exDur.split('-').map(Number);
+    reState.days[di].exercises[ei].duration = parseInt(inp.value)||0;
+  }));
+  $('re-body').querySelectorAll('[data-ex-dist]').forEach(inp=>inp.addEventListener('input',()=>{
+    const [di,ei]=inp.dataset.exDist.split('-').map(Number);
+    reState.days[di].exercises[ei].distance = inp.value;
+  }));
 }
 
 // Ver rutina activa en Hoy
@@ -922,8 +962,8 @@ function openRoutineUse(id){
     html+=`<div style="background:var(--bg1);border:1px solid var(--b);border-radius:10px;padding:12px;margin-bottom:10px">
       <div style="font-family:'Bebas Neue';font-size:1.1rem;margin-bottom:8px;color:var(--a)">${day.dia}</div>`;
     day.exercises.forEach(ex=>{
-      html+=`<button class="card" style="width:100%;text-align:left;margin-bottom:6px;background:var(--bg2)" data-use-ex='${JSON.stringify({id:ex.exId,name:ex.name,cat:ex.cat||'',type:ex.type,met:ex.met,equipo:ex.equipo||'',sets:ex.sets,reps:ex.reps})}'>
-        <div class="card-info"><div class="card-name">${ex.name}</div><div class="card-meta">${ex.sets||3}×${ex.reps||''}</div></div>
+      html+=`<button class="card" style="width:100%;text-align:left;margin-bottom:6px;background:var(--bg2)" data-use-ex='${JSON.stringify({id:ex.exId,name:ex.name,cat:ex.cat||'',type:ex.type,met:ex.met,equipo:ex.equipo||'',sets:ex.sets,reps:ex.reps,weight:ex.weight,duration:ex.duration,distance:ex.distance})}'>
+        <div class="card-info"><div class="card-name">${ex.name}</div><div class="card-meta">${ex.type==='fuerza'?`${ex.sets||3}×${ex.reps||''} ${ex.weight?'@ '+ex.weight:''}`:`${ex.duration||30} min ${ex.distance?'· '+ex.distance:''}`}</div></div>
         <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
       </button>`;
     });
