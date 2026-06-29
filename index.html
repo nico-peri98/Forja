@@ -692,7 +692,15 @@ function bodyWeight(){ return state.settings.bodyWeight || DEFAULT_WEIGHT; }
 function entryMinutes(e){ return e.type==='fuerza' ? (Number(e.sets)||1)*MIN_PER_SET : (Number(e.duration)||0); }
 function entryKcal(e){
   const min = entryMinutes(e);
-  const kcal = (Number(e.met)||4) * bodyWeight() * (min/60);
+  // Extrae el peso numérico del campo weight (ej: "12kg" -> 12, "12.5" -> 12.5)
+  let weightNum = 0;
+  if(e.weight && e.type==='fuerza'){
+    const match = String(e.weight).match(/[\d.]+/);
+    if(match) weightNum = parseFloat(match[0]) || 0;
+  }
+  // Fórmula: MET × (peso corporal + peso ejercicio) × (minutos/60)
+  const totalWeight = bodyWeight() + weightNum;
+  const kcal = (Number(e.met)||4) * totalWeight * (min/60);
   return Math.round(kcal);
 }
 function dayKcal(key){ return (state.logs[key]||[]).reduce((s,e)=>s+entryKcal(e),0); }
