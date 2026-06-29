@@ -747,8 +747,8 @@ function openLogForm(ex, editId=null){
   if(ex.type==='fuerza'){
     $('sf-fields').innerHTML=`
       <div class="frow3">
-        <div class="fblock"><div class="flabel">Series</div><input class="finput" type="number" id="ff-sets" inputmode="numeric" value="${existing?.sets||3}"></div>
-        <div class="fblock"><div class="flabel">Reps</div><input class="finput" type="text" id="ff-reps" placeholder="10" value="${existing?.reps||''}"></div>
+        <div class="fblock"><div class="flabel">Series</div><input class="finput" type="number" id="ff-sets" inputmode="numeric" value="${existing?.sets||(ex.sets||3)}"></div>
+        <div class="fblock"><div class="flabel">Reps</div><input class="finput" type="text" id="ff-reps" placeholder="10" value="${existing?.reps||(ex.reps||'')}"></div>
         <div class="fblock"><div class="flabel">Peso</div><input class="finput" type="text" id="ff-weight" placeholder="20kg" value="${existing?.weight||''}"></div>
       </div>
       <div class="frow2">
@@ -922,7 +922,7 @@ function openRoutineUse(id){
     html+=`<div style="background:var(--bg1);border:1px solid var(--b);border-radius:10px;padding:12px;margin-bottom:10px">
       <div style="font-family:'Bebas Neue';font-size:1.1rem;margin-bottom:8px;color:var(--a)">${day.dia}</div>`;
     day.exercises.forEach(ex=>{
-      html+=`<button class="card" style="width:100%;text-align:left;margin-bottom:6px;background:var(--bg2)" data-use-ex='${JSON.stringify({id:ex.exId,name:ex.name,cat:ex.cat||'',type:ex.type,met:ex.met,equipo:ex.equipo||''})}'>
+      html+=`<button class="card" style="width:100%;text-align:left;margin-bottom:6px;background:var(--bg2)" data-use-ex='${JSON.stringify({id:ex.exId,name:ex.name,cat:ex.cat||'',type:ex.type,met:ex.met,equipo:ex.equipo||'',sets:ex.sets,reps:ex.reps})}'>
         <div class="card-info"><div class="card-name">${ex.name}</div><div class="card-meta">${ex.sets||3}×${ex.reps||''}</div></div>
         <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
       </button>`;
