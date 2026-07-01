@@ -878,13 +878,73 @@ function renderSessionStarter(reco){
     $('session-container').innerHTML = `
       <div style="background:var(--bg2);border:1px solid var(--b);border-radius:12px;padding:18px;margin-bottom:14px;text-align:center">
         <div style="font-size:.86rem;color:var(--td);margin-bottom:12px">Sin rutina activa</div>
-        <button class="btn btn-p btn-full" onclick="openTab('rutinas')">Crear o activar rutina</button>
+        <button class="btn btn-p btn-full" onclick="openTab('rutinas')" style="margin-bottom:8px">Crear o activar rutina</button>
+        <button class="btn btn-s btn-full" id="btn-free-workout-empty">Entrenamiento libre</button>
       </div>`;
+    $('btn-free-workout-empty').addEventListener('click',()=>startFreeSession());
     return;
   }
-  $('session-container').innerHTML = `
-    <button class="btn btn-p btn-full" id="btn-start-workout" style="padding:16px;font-size:.95rem;margin-bottom:14px">▶ Iniciar entrenamiento</button>`;
-  $('btn-start-workout').addEventListener('click',()=>openDayPicker(reco.dayId));
+  
+  // Mostrar TODOS los días de la rutina activa como botones directos
+  let html = `
+    <div style="font-size:.62rem;color:var(--tm);letter-spacing:.15em;text-transform:uppercase;font-weight:700;margin:18px 0 10px">¿Qué vas a entrenar?</div>`;
+  
+  ar.days.forEach((day,idx)=>{
+    const lastSes = [...S.sessions].reverse().find(s=>s.dayId===day.id);
+    const isSuggested = day.id===reco.dayId;
+    const mgs = muscleGroupsOfDay(day);
+    const lastTxt = lastSes 
+      ? `Hace ${daysAgo(new Date(lastSes.date).getTime())} día${daysAgo(new Date(lastSes.date).getTime())===1?'':'s'}` 
+      : 'Sin sesiones';
+    
+    html += `
+      <button class="day-pick-btn ${isSuggested?'suggested':''}" data-start-day="${day.id}" style="margin-bottom:8px">
+        <div class="day-pick-num">${idx+1}</div>
+        <div class="day-pick-info">
+          ${isSuggested?'<div class="day-pick-badge">⚡ Sugerido</div>':''}
+          <div class="day-pick-name">${day.dia}</div>
+          <div class="day-pick-last">${lastTxt} · ${day.exercises.length} ej.${mgs.length?' · '+mgs.map(g=>MG_LABELS[g]).join(', '):''}</div>
+        </div>
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="color:var(--a);flex-shrink:0"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+      </button>`;
+  });
+  
+  // Entrenamiento libre (sin día de rutina)
+  html += `
+    <button class="day-pick-btn" id="btn-free-workout" style="margin-top:8px">
+      <div class="day-pick-num" style="background:var(--bg2);color:var(--td)">+</div>
+      <div class="day-pick-info">
+        <div class="day-pick-name">Entrenamiento libre</div>
+        <div class="day-pick-last">Sin día de rutina · ejercicios sueltos</div>
+      </div>
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="color:var(--td);flex-shrink:0"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+    </button>`;
+  
+  $('session-container').innerHTML = html;
+  
+  // Eventos: tocar un día arranca la sesión directamente
+  $('session-container').querySelectorAll('[data-start-day]').forEach(b=>b.addEventListener('click',()=>{
+    startSession(b.dataset.startDay);
+  }));
+  $('btn-free-workout')?.addEventListener('click',()=>startFreeSession());
+}
+
+function startFreeSession(){
+  S.activeSession = {
+    id: 'ses_'+uid(),
+    date: todayKey(),
+    startTime: new Date().toISOString(),
+    endTime: null,
+    duration: 0,
+    routineId: null,
+    routineName: null,
+    dayId: null,
+    dayName: 'Entrenamiento libre',
+    exercises: [],
+    muscleGroups: [],
+  };
+  save();
+  openSession();
 }
 
 function renderActiveSessionBanner(){
